@@ -4,7 +4,10 @@
         <v-card-text class="alph">
         ||<strong class="book">
           <span class="mdi mdi-expansion-card-variant "></span>
+
+          
           ALL EXPENSE
+
         </strong>
             
       </v-card-text>
