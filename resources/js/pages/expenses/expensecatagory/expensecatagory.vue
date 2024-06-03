@@ -21,11 +21,40 @@
 <script>
 import ExpenseTable from "../expensecatagory/catagorytable.vue";
 import catagorypopup from "../expensecatagory/catagorypopup.vue";
+import axios from "axios";
 
 export default {
     components: {
         ExpenseTable,
         catagorypopup,
+    },
+
+    data() {
+        return {
+            expenseCategories: [],
+        };
+    },
+    
+    methods: {
+        getAllExpenseCategory() {
+            axios
+                .get("http://127.0.0.1:8000/api/expenseCatagories")
+                .then((response) => {
+                    console.log(response.data);
+                    this.expenseCategories = response.data.data;
+                })
+                .catch((error) => {
+                    console.error(
+                        "There was an error fetching the data:",
+                        error
+                    );
+                    // this.message = "Failed to load data.";
+                });
+        },
+    },
+    created() {
+
+        this.getAllExpenseCategory();
     },
 };
 </script>
