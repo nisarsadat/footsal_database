@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\GymnasiumController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::apiResource('/gymnasia', GymnasiumController::class);
+Route::get('gymnasiums', [GymnasiumController::class, 'index'])->name('gymnasiums.index');
+
+
+
 Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/{any?}', function () {
     return view('welcome');
 });
