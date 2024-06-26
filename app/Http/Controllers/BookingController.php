@@ -19,9 +19,10 @@ class BookingController extends Controller
     $perPage = $request->query('perPage', 10);
 
     // Fetch paginated bookings
-    $bookings = Booking::with(['customer', 'hall'])->paginate($perPage);
-
-    // Return paginated collection of BookingResource
+    $bookings = Booking::with(['customer', 'hall'])
+        ->orderBy('id', 'desc')
+        ->paginate($perPage);
+        // Return paginated collection of BookingResource
     return BookingResource::collection($bookings);
 
         // $booking= Booking::with(['customer','hall'])->get();
