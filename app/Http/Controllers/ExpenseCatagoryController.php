@@ -17,7 +17,7 @@ class ExpenseCatagoryController extends Controller
     public function index(Request $request)
     {
 
-        $perPage = $request->query('perPage', 10);
+        $perPage = $request->query('perPage');
 
         // Fetch paginated bookings
         $expenseCatagory = ExpenseCatagory::with([])->paginate($perPage);

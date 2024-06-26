@@ -17,7 +17,7 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
 
-
+        // return ""
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
@@ -54,9 +54,10 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
-        $expense->load('expenseCatagory'); // Eager load the relationships
+        return "ok";
+        // $expense->load('expenseCatagory'); // Eager load the relationships
 
-        return new ExpenseResource($expense);
+        // return new ExpenseResource($expense);
     }
 
     /**

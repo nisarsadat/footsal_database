@@ -103,6 +103,7 @@ const CreateExpense = async () => {
     try {
         const response = await axios.post("expenses", formData);
         console.log("Expense Successfully Created:", response);
+        alert('Submission successful!');
         clear();
         // Optionally, add a toast message or similar notification
     } catch (error) {

@@ -114,10 +114,9 @@ export default {
     methods: {
         async Fetchexpenses({ page, itemsPerPage }) {
             this.loading = true;
-            this.dailog = false;
 
             const response = await axios.get(
-                `expenses?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+                `expenses?page=${page}&perPage=${itemsPerPage}`
             );
             this.expenses = response.data.data;
             this.totalItems = response.data.meta.total;

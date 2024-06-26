@@ -65,7 +65,8 @@ function createCategory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
             CreateCategory(formData);
-            this.createDailog = false;
+            alert('Submission successful!');
+
         }
     });
 }
