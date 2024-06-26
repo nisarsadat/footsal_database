@@ -10,9 +10,9 @@
         </div>
     </v-card>
 
-    <v-card flat class="" width="400">
-        <v-list v-model:opened="open">
-            <v-list-group value="dashbord">
+    <v-card flat class="" width="400" >
+        <v-list v-model:opened="open" >
+            <v-list-group value="dashbord" >
                 <template v-slot:activator="{ props }">
                     <router-link to="/" class="textD hover">
                         <v-list-item
@@ -188,7 +188,7 @@
                 </template>
 
                 <v-list-group value="bookking" class="hover">
-                    <template v-slot:activator="{ props }" flat>
+                    <template v-slot:activator="{ props }" flat >
                         <router-link to="/booking" class="textD">
                             <v-list-item
                                 prepend-icon="mdi mdi-book-plus"
@@ -206,7 +206,6 @@
                         :value="title"
                     ></v-list-item>
                 </v-list-group>
-
                 <v-list-group value="payment" class="hover">
                     <template v-slot:activator="{ props }">
                         <router-link to="/payment" class="textD"
@@ -334,7 +333,7 @@ img {
 }
 .hover:hover {
     color: rgb(20, 73, 120);
-}
+;}
 .textD
 {
     text-decoration: none;

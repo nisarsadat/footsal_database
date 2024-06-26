@@ -1,86 +1,142 @@
 <template>
-    <div class="boxShadow">
-        <div
-            class="d-flex pb-6 text-3xl font-semibold leading-snug font-serif margin"
-            flat
-        >
-            <v-card-text class="alph">
-                ||<strong class="book">
-                    <span class="mdi mdi-expansion-card"></span>
-                    EXPENSE CATEGORY
-                </strong>
-            </v-card-text>
-            <catagorypopup />
-        </div>
-        <div class="margin">
-            <ExpenseTable />
+    <Create v-if="createDailog" :dailog="createDailog" />
+    <div class="relative sm:rounded-lg mt-20 p-12">
+        <!-- in this part i import header for breadcrumbs  -->
+        <Header mainTitle="Expenses" subTitle="Expense Category" />
+        <v-layout class="py-5">
+            <v-row class="justify-space-between">
+                <v-col cols="12" sm="3"> </v-col>
+                <v-col cols="12" sm="2">
+                    <v-btn
+                        color="light-blue-darken-1"
+                        size="large"
+                        @click="createPopUp"
+                    >
+                        <span>Create</span>
+                        <v-icon right large>mdi-plus</v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-layout>
+
+        <div class="overflow-x-auto pb-10">
+            <v-app>
+                <v-main>
+                    <v-row>
+                        <v-col>
+                            <v-data-table-server
+                                v-model:items-per-page="itemsPerPage"
+                                :headers="headers"
+                                :items-length="totalItems"
+                                :items="expenseCategories"
+                                :loading="loading"
+                                item-value="id"
+                                @update:options="FetchExpenseCategories"
+                                hover
+                            >
+                                <template
+                                    v-slot:item.actions="{ item }"
+                                    class="right"
+                                >
+                                    <v-menu>
+                                        <template v-slot:activator="{ props }">
+                                            <v-btn
+                                                icon="mdi-dots-vertical"
+                                                v-bind="props"
+                                                variant="text"
+                                            ></v-btn>
+                                        </template>
+
+                                        <v-list>
+                                            <v-list-item>
+                                                <v-list-item-title
+                                                    @click="editItem(item)"
+                                                    class="cursor-pointer d-flex gap-3 justify-left pb-3"
+                                                >
+                                                    <v-icon color="gray"
+                                                        >mdi-square-edit-outline</v-icon
+                                                    >
+                                                    Edit
+                                                </v-list-item-title>
+
+                                                <v-list-item-title
+                                                    class="cursor-pointer d-flex gap-3"
+                                                    @click="
+                                                        DeleteExpenseCategory(
+                                                            item.id
+                                                        )
+                                                    "
+                                                >
+                                                    <v-icon color="gray"
+                                                        >mdi-delete-outline</v-icon
+                                                    >
+                                                    Delete
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </template>
+                            </v-data-table-server>
+                        </v-col>
+                    </v-row>
+                </v-main>
+            </v-app>
         </div>
     </div>
 </template>
-
 <script>
-import ExpenseTable from "../expensecatagory/catagorytable.vue";
-import catagorypopup from "../expensecatagory/catagorypopup.vue";
-import axios from "axios";
-
+import Header from "../../../components/Header.vue";
+import Create from "./Create.vue";
 export default {
     components: {
-        ExpenseTable,
-        catagorypopup,
+        Header,
+        Create,
     },
-
-    data() {
-        return {
-            expenseCategories: [],
-        };
-    },
-    
+    data: () => ({
+        headers: [
+            { title: "CATEGORY", key: "name", sortable: false },
+            { title: "Action", key: "actions", sortable: false, align: "end" },
+        ],
+        createDailog: false,
+        itemsPerPage: 5,
+        page: 1,
+        loading: false,
+        dailog: false,
+        totalItems: 0,
+        expenseCategories: [],
+    }),
     methods: {
-        getAllExpenseCategory() {
-            axios
-                .get("http://127.0.0.1:8000/api/expenseCatagories")
-                .then((response) => {
-                    console.log(response.data);
-                    this.expenseCategories = response.data.data;
-                })
-                .catch((error) => {
-                    console.error(
-                        "There was an error fetching the data:",
-                        error
-                    );
-                    // this.message = "Failed to load data.";
-                });
+        async FetchExpenseCategories({ page, itemsPerPage }) {
+            this.loading = true;
+
+            const response = await axios.get(
+                `expenseCatagories?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+            );
+            this.expenseCategories = response.data.data;
+            this.totalItems = response.data.meta.total;
+            this.loading = false;
+            this.dailog = false;
+        },
+        async DeleteExpenseCategory(id) {
+            const config = {
+                method: "DELETE",
+                url: "expenseCatagories/" + id,
+            };
+
+            const response = await axios(config);
+            this.FetchExpenseCategories({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
+        },
+
+        // Temaplate Function
+        createPopUp() {
+            this.createDailog = true;
         },
     },
-    created() {
 
-        this.getAllExpenseCategory();
-    },
+    mounted() {},
 };
 </script>
-
-<style>
-.boxShadow {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
-    margin-top: 30px;
-}
-.margin {
-    width: 90%;
-    height: 90%;
-    margin: 0 auto;
-}
-.book {
-    font-size: 18px;
-    font-weight: bolder;
-    letter-spacing: 12px;
-    line-height: 3;
-}
-.alph {
-    font-size: 18px;
-    font-weight: bolder;
-    line-height: 3;
-}
-</style>
+<style></style>

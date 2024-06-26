@@ -1,116 +1,123 @@
 <template>
-    <v-data-table
-        v-model:items-per-page="itemsPerPage"
-        :headers="headers"
-        :items="serverItems"
-        :items-length="totalItems"
-        :loading="loading"
-        item-value="ownerId"
-        @update:options="loadItems"
-    >
-        <template v-slot:item.actions="{ item }">
-            <v-btn @click="editItem(item)" color="green"><span class="mdi mdi-pencil black"></span></v-btn>
-            <v-btn @click="deleteItem(item)" color="red"><span class="mdi mdi-delete black"></span></v-btn>
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+        <template v-slot:default="{ isActive }">
+            <v-card class="px-3">
+                <v-card-title class="px-6 py-4 d-flex justify-space-between">
+                    <h2>Create</h2>
+
+                    <v-btn variant="text" @click="isActive.value = false"
+                        ><v-icon> mdi-close </v-icon></v-btn
+                    >
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-form ref="formRef">
+                        <v-autocomplete
+                            v-model="formData.owenerId"
+                            clearable
+                            variant="outlined"
+                            label="Owener Id*"
+                            density="compact"
+                            :items="owenerAllId"
+                            item-title="name"
+                            item-value="id"
+                            :rules="[rules.required]"
+                            :return-object="false"
+                        ></v-autocomplete>
+                        <v-text-field
+                            v-model="formData.amount"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Amount *"
+                            type="number"
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.date"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Date *"
+                            type="date"
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-textarea
+                            v-model="formData.note"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Description *"
+                            class="pb-4"
+                        ></v-textarea>
+                        
+                    </v-form>
+                </v-card-text>
+                <div class="justify-start pl-6 pb-6">
+                    <v-btn color="light-blue-darken-1" @click="createOwener"
+                        >Submit</v-btn
+                    >
+                </div>
+            </v-card>
         </template>
-    </v-data-table>
+    </v-dialog>
 </template>
-<script>
-const items = [
-    {
-        ownerId: 1,
-        amount: 100,
-        date: "2024-05-01",
-        note: "Note 1",
-    },
-    {
-        ownerId: 2,
-        amount: 200,
-        date: "2024-05-02",
-        note: "Note 2",
-    },
-    // Add more items as needed
-];
+<script setup>
+let dailog = defineProps("dailog");
+import { reactive, ref } from "vue";
 
-const FakeAPI = {
-    async fetch({ page, itemsPerPage, sortBy }) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const start = (page - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
-                const itemsCopy = items.slice();
+const formRef = ref(null);
+let owenerAllId = reactive([]);
+const formData = reactive({
+    owenerId: "",
+    note: "",
+    amount: "",
+    date: "",
+});
+const FetchOwenerAllId = async () => {
+    const response = await axios.get(`owenerAllId`);
+    owenerAllId = response.data.data;
+    
 
-                if (sortBy.length) {
-                    const sortKey = sortBy[0].key;
-                    const sortOrder = sortBy[0].order;
-                    itemsCopy.sort((a, b) => {
-                        const aValue = a[sortKey];
-                        const bValue = b[sortKey];
-                        return sortOrder === "desc"
-                            ? bValue - aValue
-                            : aValue - bValue;
-                    });
-                }
+};
+console.log(owenerAllId)
+FetchOwenerAllId();
 
-                const paginated = itemsCopy.slice(start, end);
+const CreateOwener = async (formData) => {
+    console.log(formData);
+    // Adding a custom header to the Axios request
+    // setContentType("application/json");
+    const config = {
+        method: "POST",
+        url: "owners",
 
-                resolve({ items: paginated, total: items.length });
-            }, 500);
-        });
-    },
+        data: formData,
+    };
+
+    // Using Axios to make a GET request with async/await and custom headers
+    const response = await axios(config);
+    // toast.success("Expense Succesfully Created", {
+    //     autoClose: 1000,
+    // });
+    // this.router.push("/allExpenses");
+    // this.fetchExpenses({
+    //     page: this.page,
+    //     itemsPerPage: this.itemsPerPage,
+    // });
 };
 
-export default {
-    data: () => ({
-        itemsPerPage: 5,
-        headers: [
-            {
-                title: "Owner ID",
-                key: "ownerId",
-                align: "start",
-                sortable: true,
-            },
-            { title: "Amount", key: "amount", align: "end", sortable: true },
-            { title: "Date", key: "date", align: "end", sortable: true },
-            { title: "Note", key: "note", align: "end", sortable: false },
-            { title: "Actions", key: "actions", align: "end", sortable: false },
-        ],
-        serverItems: [],
-        loading: true,
-        totalItems: 0,
-    }),
-    methods: {
-        loadItems({ page, itemsPerPage, sortBy }) {
-            this.loading = true;
-            FakeAPI.fetch({ page, itemsPerPage, sortBy }).then(
-                ({ items, total }) => {
-                    this.serverItems = items;
-                    this.totalItems = total;
-                    this.loading = false;
-                }
-            );
-        },
-        editItem(item) {
-            alert(`Edit item: ${item.ownerId}`);
-            // Add your edit logic here
-        },
-        deleteItem(item) {
-            alert(`Delete item: ${item.ownerId}`);
-            // Add your delete logic here
-        },
-    },
-    mounted() {
-        this.loadItems({
-            page: 1,
-            itemsPerPage: this.itemsPerPage,
-            sortBy: [],
-        });
-    },
+
+const createOwener = async () => {
+    formRef.value.validate().then((validate) => {
+        if (validate.valid) {
+            CreateOwener(formData);
+        }
+    });
 };
+
+const rules = {
+    required: (value) => !!value || "Category Name is Required.",
+    counter: (value) => value.length >= 3 || "Min 3 characters",
+};
+
 </script>
-<style>
-
-.black
-{
-    color: black;
-}
-</style>

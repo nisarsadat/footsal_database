@@ -4,10 +4,10 @@
             <Menu />
         </v-navigation-drawer>
 
-        <v-app-bar title=""><bar /></v-app-bar>
+        <!-- <v-app-bar title=""><bar /></v-app-bar> -->
 
-        <v-main class="d-flex align-center justify-center main-content">
-            <div class="main-content"><router-view />   </div>
+        <v-main>
+            <router-view />  
         </v-main>
     </v-layout>
 </template>
@@ -25,11 +25,7 @@ export default {
 
 
 <style>
-.main-content {
-    width: 85%;
-    height: 100%;
-    margin: 20px;
-}
+
 
 
 

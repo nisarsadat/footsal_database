@@ -5,7 +5,7 @@ import './bootstrap';
 import { createApp } from 'vue';
 import App from './app.vue';
 import '@mdi/font/css/materialdesignicons.min.css';
-import axios from 'axios'
+import  './axios'
 
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';

@@ -20,5 +20,7 @@ class ExpenseResource extends JsonResource
             'expenseCatagory' => [
                 'id' => $this->expenseCatagory->id,
                 'name' => $this->expenseCatagory->name,
-            ],        ];    }
+            ],
+        ];
+    }
 }

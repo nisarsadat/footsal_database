@@ -23,3 +23,6 @@ Route::get('gymnasiums', [GymnasiumController::class, 'index'])->name('gymnasium
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/{any?}', function () {
+    return view('welcome');
+});

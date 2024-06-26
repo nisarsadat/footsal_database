@@ -1,92 +1,129 @@
 <template>
-    <div class="boxShadow">
-        <div
-        class="d-flex pb-6 text-3xl font-semibold leading-snug font-serif margin"
-        flat
-    >
-        <v-card-text class="alph"
-            >||<strong class="book">
-                <span class="mdi mdi-expansion-card-variant "></span>
-               CREATE EXPENSE</strong
-            ></v-card-text
-        >
-    </div>
-    <v-form @submit.prevent class="margin">
-        <div class="" width="50%">
-            <v-text-field
-                v-model="firstName"
-                :rules="rules"
-                label="Name"
+    <div class="relative sm:rounded-lg mt-20 p-12">
+        <Header mainTitle="Expenses" subTitle="Create Expense" />
+
+        <v-form ref="formRef">
+            <v-autocomplete
+                v-model="formData.expenseCatagoryId"
+                clearable
                 variant="outlined"
-            ></v-text-field>
+                label="Expense Category*"
+                density="compact"
+                :items="expenseCategories"
+                item-title="name"
+                item-value="id"
+                :rules="[rules.required]"
+                :return-object="false"
+            ></v-autocomplete>
+
             <v-text-field
-                v-model="amount"
-                :rules="rules"
-                label="amount"
-                variant="outlined"
+                v-model="formData.amount"
+                label="Amount *"
+                :rules="rules.required"
+                required
                 type="number"
+                variant="outlined"
+                density="compact"
+                class="pb-4"
+                clearable
             ></v-text-field>
+
             <v-text-field
-                v-model="date"
-                :rules="rules"
-                label="Date"
-                variant="outlined"
+                v-model="formData.date"
+                label="Date *"
+                :rules="rules.required"
+                required
                 type="date"
-            ></v-text-field>
-            <v-textarea
-                v-model="note"
-                :rules="rules"
-                label="Note"
                 variant="outlined"
+                density="compact"
+                class="pb-4"
+                clearable
+            ></v-text-field>
+
+            <v-textarea
+                v-model="formData.note"
+                label="Note *"
+                :rules="rules.required"
+                required
+                variant="outlined"
+                density="compact"
+                class="pb-4"
+                clearable
             ></v-textarea>
-        </div>
-        <v-btn class="mt-2 w-1/2" type="submit" block>Submit</v-btn>
-    </v-form>
+
+            <v-btn class="me-4" @click="createCategory">Submit</v-btn>
+            <v-btn @click="clear">Clear</v-btn>
+        </v-form>
     </div>
 </template>
-<script>
-export default {
-    data: () => ({
-        firstName: "",
-        amount: "",
-        date: "",
-        note: "",
+<script setup>
+import Header from "../../components/Header.vue";
+import { ref, reactive } from "vue";
+import axios from "axios";
 
-        rules: [
-            (value) => {
-                if (value) return true;
+let expenseCategories = reactive([]);
 
-                return "You must enter a first name.";
-            },
-        ],
-    }),
+const formRef = ref(null);
+const formData = reactive({
+    expenseCatagoryId: "",
+    amount: "",
+    date: "",
+    note: "",
+});
+
+const rules = {
+    required: [(value) => !!value || "This field is required"],
+    name: [
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length >= 3) || "Name must be at least 3 characters",
+    ],
 };
-</script>
-<style>
-.book {
-    font-size: 18px;
-    font-weight: bolder;
-    letter-spacing: 12px;
-    line-height: 3;
-}
-.alph {
-    font-size: 18px;
-    font-weight: bolder;
-    line-height: 3;
-}
-.boxShadow
-{
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
-    margin-top: 30px;
 
+function clear() {
+    if (formRef.value) {
+        formRef.value.resetValidation();
+    }
+    Object.keys(formData).forEach((key) => {
+        formData[key] = "";
+    });
 }
-.margin
-{
-    width: 90%;
-    height: 90%;
-    margin: 0 auto;
-}
-</style>
+
+
+const FetchExpenseCategories = async () => {
+    const response = await axios.get(`expenseCatagories`);
+    expenseCategories = response.data.data;
+
+    console.log(expenseCategories);
+
+};
+FetchExpenseCategories();
+
+const CreateExpense = async () => {
+    console.log("Form Data:", formData);
+    try {
+        const response = await axios.post("expenses", formData);
+        console.log("Expense Successfully Created:", response);
+        clear();
+        // Optionally, add a toast message or similar notification
+    } catch (error) {
+        console.error("Failed to create expense:", error);
+    }
+};
+
+const createCategory = async () => {
+    if (formRef.value) {
+        const isValid = await formRef.value.validate();
+        if (isValid) {
+            CreateExpense();
+        }
+    } else {
+        console.error(
+            "Form reference is null or validate method is not available"
+        );
+        
+    }
+};
+
+
+
+</script>

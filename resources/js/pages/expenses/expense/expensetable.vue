@@ -1,95 +1,124 @@
 <template>
-    <v-data-table
-        v-model:items-per-page="itemsPerPage"
-        :headers="headers"
-        :items="serverItems"
-        :items-length="totalItems"
-        :loading="loading"
-        item-value="name"
-        @update:options="loadItems"
-    >
-        <template v-slot:item.actions="{ item }">
-            <v-btn color="green" @click="editItem(item)" small><span class="mdi mdi-pencil black"></span></v-btn>
-            <v-btn color="red" @click="deleteItem(item)" small><span class="mdi mdi-delete black"></span></v-btn>
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+        <template v-slot:default="{ isActive }">
+            <v-card class="px-3">
+                <v-card-title class="px-6 py-4 d-flex justify-space-between">
+                    <h2>Create</h2>
+
+                    <v-btn variant="text" @click="isActive.value = false"
+                        ><v-icon> mdi-close </v-icon></v-btn
+                    >
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-form ref="formRef">
+                        <v-autocomplete
+                            v-model="formData.expenseCatagoryId"
+                            clearable
+                            variant="outlined"
+                            label="Expense Category*"
+                            density="compact"
+                            :items="expenseCategories"
+                            item-title="name"
+                            item-value="id"
+                            :rules="[rules.required]"
+                            :return-object="false"
+                        ></v-autocomplete>
+                        <v-text-field
+                            v-model="formData.amount"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Amount *"
+                            type="number"
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.date"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Date *"
+                            type="date"
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-textarea
+                            v-model="formData.note"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Description *"
+                            class="pb-4"
+                        ></v-textarea>
+                        
+                    </v-form>
+                </v-card-text>
+                <div class="justify-start pl-6 pb-6">
+                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                        >Submit</v-btn
+                    >
+                </div>
+            </v-card>
         </template>
-    </v-data-table>
+    </v-dialog>
 </template>
-<script>
-const items = [
-    {
-        name: "Item 1",
-        amount: 100,
-        date: "2024-05-01",
-        note: "Note 1",
-    },
-    {
-        name: "Item 2",
-        amount: 200,
-        date: "2024-05-02",
-        note: "Note 2",
-    },
-    // Add more items as needed
-];
+<script setup>
+let dailog = defineProps("dailog");
+import { reactive, ref } from "vue";
 
-const FakeAPI = {
-    async fetch({ page, itemsPerPage, sortBy }) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const start = (page - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
-                const paginated = items.slice(start, end);
-                resolve({ items: paginated, total: items.length });
-            }, 500);
-        });
-    },
+const formRef = ref(null);
+let expenseCategories = reactive([]);
+const formData = reactive({
+    expenseCatagoryId: "",
+    note: "",
+    amount: "",
+    date: "",
+});
+const FetchExpenseCategories = async () => {
+    const response = await axios.get(`expenseCatagories`);
+    expenseCategories = response.data.data;
+    
+console.log(expenseCategories)
+
+};
+console.log(expenseCategories)
+FetchExpenseCategories();
+
+const CreateExpense = async (formData) => {
+    console.log(formData);
+    // Adding a custom header to the Axios request
+    // setContentType("application/json");
+    const config = {
+        method: "POST",
+        url: "expenses",
+
+        data: formData,
+    };
+
+    // Using Axios to make a GET request with async/await and custom headers
+    const response = await axios(config);
+    // toast.success("Expense Succesfully Created", {
+    //     autoClose: 1000,
+    // });
+    // this.router.push("/allExpenses");
+    // this.fetchExpenses({
+    //     page: this.page,
+    //     itemsPerPage: this.itemsPerPage,
+    // });
 };
 
-export default {
-    data: () => ({
-        itemsPerPage: 5,
-        headers: [
-            { title: "Name", key: "name", align: "start", sortable: true },
-            { title: "Amount", key: "amount", align: "end", sortable: true },
-            { title: "Date", key: "date", align: "end", sortable: true },
-            { title: "Note", key: "note", align: "end", sortable: false },
-            { title: "Actions", key: "actions", align: "end", sortable: false },
-        ],
-        serverItems: [],
-        loading: true,
-        totalItems: 0,
-    }),
-    methods: {
-        loadItems({ page, itemsPerPage, sortBy }) {
-            this.loading = true;
-            FakeAPI.fetch({ page, itemsPerPage, sortBy }).then(
-                ({ items, total }) => {
-                    this.serverItems = items;
-                    this.totalItems = total;
-                    this.loading = false;
-                }
-            );
-        },
-        editItem(item) {
-            alert(`Edit item: ${item.name}`);
-            // Add your edit logic here
-        },
-        deleteItem(item) {
-            alert(`Delete item: ${item.name}`);
-            // Add your delete logic here
-        },
-    },
-    mounted() {
-        this.loadItems({
-            page: 1,
-            itemsPerPage: this.itemsPerPage,
-            sortBy: [],
-        });
-    },
+
+const createCategory = async () => {
+    formRef.value.validate().then((validate) => {
+        if (validate.valid) {
+            CreateExpense(formData);
+        }
+    });
 };
+
+const rules = {
+    required: (value) => !!value || "Category Name is Required.",
+    counter: (value) => value.length >= 3 || "Min 3 characters",
+};
+
 </script>
-<style>
-.black
-{
-    color: rgb(0, 0, 0);
-}
-</style>

@@ -168,25 +168,7 @@ export let useExpenseRepository = defineStore("ExpenseRepository", {
 
         // Expense Category API
 
-        async ExpenseCategories() {
-            setContentType("application/json");
-
-            const response = await axios.get(
-                `expenseCategories`
-            );
-            this.expenseCategories = response.data.data;
-        },
-        async fetchExpenseCategories({ page, itemsPerPage }) {
-            this.loading = true;
-            setContentType("application/json");
-
-            const response = await axios.get(
-                `expenseCategories?page=${page}&perPage=${itemsPerPage}&search=${this.expenseCategorySearch}`
-            );
-            this.expenseCategories = response.data.data;
-            this.totalItems = response.data.meta.total;
-            this.loading = false;
-        },
+       
         async fetchExpenseCategory(id) {
             setContentType("application/json");
 
@@ -220,43 +202,8 @@ export let useExpenseRepository = defineStore("ExpenseRepository", {
                 itemsPerPage: this.itemsPerPage,
             });
         },
-        async CreateCategory(formData) {
-            console.log(formData);
-            // Adding a custom header to the Axios request
-            const config = {
-                method: "POST",
-                url: "expenseCategories",
-
-                data: formData,
-            };
-
-            // Using Axios to make a GET request with async/await and custom headers
-            const response = await axios(config);
-            toast.success("Category Succesfully Created", {
-                autoClose: 1000,
-            });
-            this.createDailog = false;
-            this.fetchExpenseCategories({
-                page: this.page,
-                itemsPerPage: this.itemsPerPage,
-            });
-        },
-        async DeleteExpenseCategory(id) {
-            setContentType("application/json");
-            const config = {
-                method: "DELETE",
-                url: "expenseCategories/" + id,
-            };
-
-            const response = await axios(config);
-            this.fetchExpenseCategories({
-                page: this.page,
-                itemsPerPage: this.itemsPerPage,
-            });
-            toast.success("Category Succesfully Deleted", {
-                autoClose: 1000,
-            });
-        },
+       
+       
         
 
         // Export Functions
