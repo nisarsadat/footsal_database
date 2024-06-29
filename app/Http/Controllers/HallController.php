@@ -15,16 +15,16 @@ class HallController extends Controller
      */
     public function index(Request $request)
     {
-        
+
 
 
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
-        $bookings = Hall::with([])->paginate($perPage);
+        $hallRow = Hall::with([])->paginate($perPage);
 
         // Return paginated collection of BookingResource
-        return HallResource::collection($bookings);
+        return HallResource::collection($hallRow);
 
         // $hall= Hall::all();
         // return response()->json(["data"=>$hall]);

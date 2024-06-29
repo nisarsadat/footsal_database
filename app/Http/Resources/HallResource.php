@@ -17,7 +17,7 @@ class HallResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'size' => $this->phone,
+            'size' => $this->size,
         ];
     }
 }

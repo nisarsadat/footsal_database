@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::apiResource('/customers', CustomerController::class);
 Route::apiResource('/halls', HallController::class);
 Route::apiResource('/bookings', BookingController::class);
 Route::apiResource('/payments', PaymentController::class);
@@ -51,7 +52,8 @@ Route::post('gymnasia/{gymnasium}', [GymnasiumController::class, 'updateGymnasiu
 
 
 Route::group(['middleware'=>['auth:sanctum']],function () {
-    Route::apiResource('/customers', CustomerController::class);
+    // Route::apiResource('/customers', CustomerController::class);
+
     Route::post('logout', [AuthController::class, 'logout']);
 
 
