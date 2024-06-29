@@ -18,7 +18,7 @@ class ExpenseController extends Controller
     {
 
         // return ""
-        $perPage = $request->query('perPage', 10);
+        $perPage = $request->query('perPage',10);
 
         // Fetch paginated bookings
         $bookings = Expense::with([])->paginate($perPage);

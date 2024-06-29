@@ -16,9 +16,22 @@
                             v-model="formData.name"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Category Name *"
+                            label="Gemnasyom Name *"
                             class="pb-4"
                         ></v-text-field>
+                        <v-text-field
+                        v-model="formData.path"
+                        variant="outlined"
+                        :rules="[rules.required, rules.counter]"
+                        label="Path*"
+                        class="pb-4"
+                    ></v-text-field>
+                        <v-textarea
+                            v-model="formData.note"
+                            variant="outlined"
+                            label="note *"
+                            class="pb-4"
+                        ></v-textarea>
                         <!-- <v-textarea
                             v-model="formData.details"
                             variant="outlined"
@@ -42,6 +55,8 @@ import { reactive, ref } from "vue";
 const formRef = ref(null);
 const formData = reactive({
     name: "",
+    path: "",
+    note: "",
 });
 
 const emit = defineEmits(['closePopup']);
@@ -56,14 +71,14 @@ const CreateCategory = async (formData) => {
 
     const config = {
         method: "POST",
-        url: "/expenseCatagories",
+        url: "/gymnasia",
         data: formData,
     };
 
     const response = await axios(config);
 
     this.loading = false;
-    this.fetchExpenseCategories({
+    this.fetchGymnasia({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
@@ -73,7 +88,8 @@ function createCategory() {
         if (validate.valid) {
             CreateCategory(formData);
             closePopup();
-            }
+
+        }
     });
 }
 

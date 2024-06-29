@@ -1,8 +1,9 @@
+
 <template>
-    <Popup v-if="createDailog" :dailog="createDailog" />
+    <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Expenses" subTitle="Owener Pick Up" />
+        <Header mainTitle="Expenses" subTitle="Owner Pick Up" />
         <v-layout class="py-5">
             <v-row class="justify-space-between">
                 <v-col cols="12" sm="3"> </v-col>
@@ -28,10 +29,10 @@
                                 v-model:items-per-page="itemsPerPage"
                                 :headers="headers"
                                 :items-length="totalItems"
-                                :items="expenses"
+                                :items="ownerPickups"
                                 :loading="loading"
-                                item-value="owenerId"
-                                @update:options="Fetchowners"
+                                item-value="ownerPickupsId"
+                                @update:options="FetchownerPickups"
                                 hover
                             >
                                 <template
@@ -62,7 +63,7 @@
                                                 <v-list-item-title
                                                     class="cursor-pointer d-flex gap-3"
                                                     @click="
-                                                        Deleteowners(item.id)
+                                                        DeleteownerPickups(item.id)
                                                     "
                                                 >
                                                     <v-icon color="gray"
@@ -92,41 +93,38 @@ export default {
     },
     data: () => ({
         headers: [
-            { title: "Owener Id", key: "name", sortable: false },
-            { title: "date", key: "date", sortable: false },
+            { title: "Owner Name", key: "owner.name", sortable: false },
             { title: "note", key: "note", sortable: false },
+            { title: "date", key: "date", sortable: false },
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
-        dailog:false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
-        dailog: false,
         totalItems: 0,
-        owners: [],
+        ownerPickups: [],
     }),
     methods: {
-        async Fetchowners({ page, itemsPerPage }) {
+        async FetchownerPickups({ page, itemsPerPage }) {
             this.loading = true;
-            this.dailog = false;
 
             const response = await axios.get(
-                `owners?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+                `ownerPickups?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+
             );
-            this.owners = response.data.data;
+            this.ownerPickups = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
-            this.dailog = false;
         },
-        async Deleteowners(id) {
+        async DeleteownerPickups(id) {
             const config = {
                 method: "DELETE",
-                url: "owners/" + id,
+                url: "ownerPickups/" + id,
             };
 
             const response = await axios(config);
-            this.Fetchowners({
+            this.FetchownerPickups({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
@@ -135,6 +133,10 @@ export default {
         // Temaplate Function
         createPopUp() {
             this.createDailog = true;
+        },
+
+        closebtn() {
+            this.createDailog = false;
         },
     },
 

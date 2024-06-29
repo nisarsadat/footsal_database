@@ -20,7 +20,7 @@ class OwnerPickupController extends Controller
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
-        $bookings = OwnerPickup::with([])->paginate($perPage);
+        $bookings = OwnerPickup::with(['owner'])->paginate($perPage);
 
         // Return paginated collection of BookingResource
         return OwnerPickupResource::collection($bookings);

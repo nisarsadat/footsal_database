@@ -1,8 +1,8 @@
 <template>
-    <Create v-if="createDailog" :dailog="createDailog"  @closePopup="closebtn"/>
+    <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Expenses" subTitle="Expense Category" />
+        <Header mainTitle="Setting" subTitle="Gemnasyom" />
         <v-layout class="py-5">
             <v-row class="justify-space-between">
                 <v-col cols="12" sm="3"> </v-col>
@@ -28,10 +28,10 @@
                                 v-model:items-per-page="itemsPerPage"
                                 :headers="headers"
                                 :items-length="totalItems"
-                                :items="expenseCategories"
+                                :items="gymnasia"
                                 :loading="loading"
                                 item-value="id"
-                                @update:options="FetchExpenseCategories"
+                                @update:options="FetchGymnasia"
                                 hover
                             >
                                 <template
@@ -62,9 +62,7 @@
                                                 <v-list-item-title
                                                     class="cursor-pointer d-flex gap-3"
                                                     @click="
-                                                        DeleteExpenseCategory(
-                                                            item.id
-                                                        )
+                                                        DeleteGymnasia(item.id)
                                                     "
                                                 >
                                                     <v-icon color="gray"
@@ -86,7 +84,7 @@
 </template>
 <script>
 import Header from "../../../components/Header.vue";
-import Create from "./Create.vue";
+import Create from "./popup.vue";
 export default {
     components: {
         Header,
@@ -94,7 +92,9 @@ export default {
     },
     data: () => ({
         headers: [
-            { title: "CATEGORY", key: "name", sortable: false },
+            { title: "Name", key: "name", sortable: false },
+            { title: "Path", key: "path", sortable: false },
+            { title: "Note", key: "note", sortable: false },
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
@@ -103,27 +103,27 @@ export default {
         loading: false,
         dailog: false,
         totalItems: 0,
-        expenseCategories: [],
+        gymnasia: [],
     }),
     methods: {
-        async FetchExpenseCategories({ page, itemsPerPage }) {
+        async FetchGymnasia({ page, itemsPerPage }) {
             this.loading = true;
 
             const response = await axios.get(
-                `expenseCatagories?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+                `gymnasia?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
             );
-            this.expenseCategories = response.data.data;
+            this.gymnasia = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
         },
-        async DeleteExpenseCategory(id) {
+        async DeleteGymnasia(id) {
             const config = {
                 method: "DELETE",
-                url: "expenseCatagories/" + id,
+                url: "gymnasia/" + id,
             };
 
             const response = await axios(config);
-            this.FetchExpenseCategories({
+            this.FetchGymnasia({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
@@ -135,7 +135,6 @@ export default {
         },
         closebtn() {
             this.createDailog = false;
-
         },
     },
 

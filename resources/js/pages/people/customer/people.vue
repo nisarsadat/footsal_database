@@ -1,70 +1,145 @@
 <template>
-    <div class="boxShadow">
-        <div
-            class="d-flex pb-6 text-3xl font-semibold leading-snug font-serif margin"
-            flat
-        >
-        <v-card-text class="alph">||<strong class="book">   Customer</strong></v-card-text>
+    <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn"/>
+    <div class="relative sm:rounded-lg mt-20 p-12">
+        <!-- in this part i import header for breadcrumbs  -->
+        <Header mainTitle="People" subTitle="Owner" />
+        <v-layout class="py-5">
+            <v-row class="justify-space-between">
+                <v-col cols="12" sm="3"> </v-col>
+                <v-col cols="12" sm="2">
+                    <v-btn
+                        color="light-blue-darken-1"
+                        size="large"
+                        @click="createPopUp"
+                    >
+                        <span>Create</span>
+                        <v-icon right large>mdi-plus</v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-layout>
 
-            <v-btn
-                prepend-icon="mdi-plus"
-                variant="tonal"
-                class="mt-6 BGGREEN"
-                @click="openDialog"
-                >create</v-btn
-            >
+        <div class="overflow-x-auto pb-10">
+            <v-app>
+                <v-main>
+                    <v-row>
+                        <v-col>
+                            <v-data-table-server
+                                v-model:items-per-page="itemsPerPage"
+                                :headers="headers"
+                                :items-length="totalItems"
+                                :items="owners"
+                                :loading="loading"
+                                item-value="id"
+                                @update:options="FetchOwners"
+                                hover
+                            >
+                                <template
+                                    v-slot:item.actions="{ item }"
+                                    class="right"
+                                >
+                                    <v-menu>
+                                        <template v-slot:activator="{ props }">
+                                            <v-btn
+                                                icon="mdi-dots-vertical"
+                                                v-bind="props"
+                                                variant="text"
+                                            ></v-btn>
+                                        </template>
 
+                                        <v-list>
+                                            <v-list-item>
+                                                <v-list-item-title
+                                                    @click="editItem(item)"
+                                                    class="cursor-pointer d-flex gap-3 justify-left pb-3"
+                                                >
+                                                    <v-icon color="gray"
+                                                        >mdi-square-edit-outline</v-icon
+                                                    >
+                                                    Edit
+                                                </v-list-item-title>
+
+                                                <v-list-item-title
+                                                    class="cursor-pointer d-flex gap-3"
+                                                    @click="
+                                                    DeleteOwners(
+                                                            item.id
+                                                        )
+                                                    "
+                                                >
+                                                    <v-icon color="gray"
+                                                        >mdi-delete-outline</v-icon
+                                                    >
+                                                    Delete
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </template>
+                            </v-data-table-server>
+                        </v-col>
+                    </v-row>
+                </v-main>
+            </v-app>
         </div>
-        <people-popup ref="PeoplePopup"></people-popup>
-
-
-        <!-- Popup Dialog Component -->
-
-        <peopletable />
     </div>
 </template>
-
 <script>
-import PeoplePopup from './peoplepopup.vue';
-import peopletable from './peopletable.vue';
+import Header from "../../../components/Header.vue";
+import Create from "./peoplepopup.vue";
 export default {
     components: {
-        PeoplePopup,
-        peopletable,
+        Header,
+        Create,
     },
+    data: () => ({
+        headers: [
+            { title: "Name", key: "name", sortable: false },
+            { title: "Action", key: "actions", sortable: false, align: "end" },
+        ],
+        createDailog: false,
+        itemsPerPage: 5,
+        page: 1,
+        loading: false,
+        dailog: false,
+        totalItems: 0,
+        owners: [],
+    }),
     methods: {
-        openDialog() {
-            this.$refs.PeoplePopup.openDialog();
+        async FetchOwners({ page, itemsPerPage }) {
+            this.loading = true;
+
+            const response = await axios.get(
+                `owners?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+            );
+            this.owners = response.data.data;
+            this.totalItems = response.data.meta.total;
+            this.loading = false;
+            this.dailog = false;
+        },
+        async DeleteOwners(id) {
+            const config = {
+                method: "DELETE",
+                url: "owners/" + id,
+            };
+
+            const response = await axios(config);
+            this.FetchOwners({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
+        },
+
+        // Temaplate Function
+        createPopUp() {
+            this.createDailog = true;
+        },
+        closebtn() {
+            this.createDailog = false;
         },
     },
+
+    mounted() {},
 };
 </script>
-
-<style scoped>
-.book {
-    font-size: 18px;
-    font-weight: bolder;
-    letter-spacing: 12px;
-    line-height: 3;
-}
-.alph {
-    font-size: 18px;
-    font-weight: bolder;
-    line-height: 3;
-}
-.boxShadow {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
-    margin-top: 30px;
-}
-.margin {
-    width: 90%;
-    height: 90%;
-    margin: 0 auto;
-}
-.BGGREEN {
-    background-color: rgb(31, 228, 77);
-}
-</style>
+<style></style>

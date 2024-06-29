@@ -10,9 +10,9 @@
         </div>
     </v-card>
 
-    <v-card flat class="" width="400" >
-        <v-list v-model:opened="open" >
-            <v-list-group value="dashbord" >
+    <v-card flat class="" width="400">
+        <v-list v-model:opened="open">
+            <v-list-group value="dashbord">
                 <template v-slot:activator="{ props }">
                     <router-link to="/" class="textD hover">
                         <v-list-item
@@ -23,7 +23,7 @@
                     </router-link>
                 </template>
             </v-list-group>
-            <v-list-group value="expence" >
+            <v-list-group value="expence">
                 <template v-slot:activator="{ props }">
                     <v-list-item
                         v-bind="props"
@@ -77,7 +77,7 @@
                             <v-list-item
                                 prepend-icon="mdi mdi-account-tie"
                                 v-bind="props"
-                                title="Owener Pick Up"
+                                title="Owner Pick Up"
                                 class="text-xs"
                             ></v-list-item>
                         </router-link>
@@ -112,7 +112,7 @@
                     ></v-list-item>
                 </v-list-group>
             </v-list-group>
-            <v-list-group value="people" >
+            <v-list-group value="people">
                 <template v-slot:activator="{ props }">
                     <v-list-item
                         v-bind="props"
@@ -124,12 +124,13 @@
 
                 <v-list-group value="customer" class="hover">
                     <template v-slot:activator="{ props }">
-                    <router-link to="/people" class="textD">
-                        <v-list-item
-                            prepend-icon="mdi mdi-face-agent"
-                            v-bind="props"
-                            title="Customer"
-                        ></v-list-item></router-link>
+                        <router-link to="/customer" class="textD">
+                            <v-list-item
+                                prepend-icon="mdi mdi-face-agent"
+                                v-bind="props"
+                                title="Customer"
+                            ></v-list-item>
+                        </router-link>
                     </template>
 
                     <v-list-item
@@ -143,11 +144,13 @@
 
                 <v-list-group value="owener" class="hover">
                     <template v-slot:activator="{ props }">
-                        <v-list-item
-                            prepend-icon="mdi mdi-account-key"
-                            v-bind="props"
-                            title="Owener"
-                        ></v-list-item>
+                        <router-link to="/people" class="textD">
+                            <v-list-item
+                                prepend-icon="mdi mdi-account-key"
+                                v-bind="props"
+                                title="Owner"
+                            ></v-list-item
+                        ></router-link>
                     </template>
 
                     <v-list-item
@@ -177,7 +180,7 @@
                     ></v-list-item>
                 </v-list-group>
             </v-list-group>
-            <v-list-group value="booking" >
+            <v-list-group value="booking">
                 <template v-slot:activator="{ props }">
                     <v-list-item
                         v-bind="props"
@@ -188,7 +191,7 @@
                 </template>
 
                 <v-list-group value="bookking" class="hover">
-                    <template v-slot:activator="{ props }" flat >
+                    <template v-slot:activator="{ props }" flat>
                         <router-link to="/booking" class="textD">
                             <v-list-item
                                 prepend-icon="mdi mdi-book-plus"
@@ -226,7 +229,7 @@
                     ></v-list-item>
                 </v-list-group>
             </v-list-group>
-            <v-list-group value="setting" >
+            <v-list-group value="setting">
                 <template v-slot:activator="{ props }">
                     <v-list-item
                         v-bind="props"
@@ -333,9 +336,8 @@ img {
 }
 .hover:hover {
     color: rgb(20, 73, 120);
-;}
-.textD
-{
+}
+.textD {
     text-decoration: none;
 }
 </style>

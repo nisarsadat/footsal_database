@@ -1,5 +1,6 @@
+z
 <template>
-    <Popup v-if="createDailog" :dailog="createDailog" />
+    <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Expenses" subTitle="All Expense" />
@@ -92,22 +93,20 @@ export default {
     },
     data: () => ({
         headers: [
-            { title: "Name", key: "name", sortable: false },
             {
                 title: "Expense Category",
                 key: "expenseCatagory.name",
-                sortable: false,
+                sortable: false
             },
-            { title: "date", key: "date", sortable: false },
-            { title: "note", key: "note", sortable: false },
-            { title: "Action", key: "actions", sortable: false, align: "end" },
+            { title: "Amount", key: "amount", sortable: false },
+            { title: "Note", key: "note", sortable: false },
+            { title: "Date", key: "date", sortable: false },
+            { title: "Action", key: "actions", sortable: false, align: "end" }
         ],
         createDailog: false,
-        dailog:false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
-        dailog: false,
         totalItems: 0,
         expenses: [],
     }),
@@ -116,12 +115,11 @@ export default {
             this.loading = true;
 
             const response = await axios.get(
-                `expenses?page=${page}&perPage=${itemsPerPage}`
+                `expenses?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
             );
             this.expenses = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
-            this.dailog = false;
         },
         async Deleteexpenses(id) {
             const config = {
@@ -139,6 +137,10 @@ export default {
         // Temaplate Function
         createPopUp() {
             this.createDailog = true;
+        },
+
+        closebtn() {
+            this.createDailog = false;
         },
     },
 

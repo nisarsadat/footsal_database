@@ -16,7 +16,14 @@
                             v-model="formData.name"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Category Name *"
+                            label="Hall Name *"
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.size"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Hall Size *"
                             class="pb-4"
                         ></v-text-field>
                         <!-- <v-textarea
@@ -42,6 +49,7 @@ import { reactive, ref } from "vue";
 const formRef = ref(null);
 const formData = reactive({
     name: "",
+    size: "",
 });
 
 const emit = defineEmits(['closePopup']);
@@ -56,14 +64,14 @@ const CreateCategory = async (formData) => {
 
     const config = {
         method: "POST",
-        url: "/expenseCatagories",
+        url: "/halls",
         data: formData,
     };
 
     const response = await axios(config);
 
     this.loading = false;
-    this.fetchExpenseCategories({
+    this.fetchHalls({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
@@ -73,7 +81,8 @@ function createCategory() {
         if (validate.valid) {
             CreateCategory(formData);
             closePopup();
-            }
+
+        }
     });
 }
 

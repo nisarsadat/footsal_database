@@ -5,7 +5,9 @@
                 <v-card-title class="px-6 py-4 d-flex justify-space-between">
                     <h2>Create</h2>
 
-                    <v-btn variant="text" @click="isActive.value = false"
+                    <v-btn variant="text"
+                     @click="closePopup"
+                     
                         ><v-icon> mdi-close </v-icon></v-btn
                     >
                 </v-card-title>
@@ -65,6 +67,13 @@
 <script setup>
 let dailog = defineProps("dailog");
 import { reactive, ref } from "vue";
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(['closePopup']);
+
+const closePopup = () => {
+    emit('closePopup');
+};
 
 const formRef = ref(null);
 let expenseCategories = reactive([]);
@@ -78,10 +87,9 @@ const FetchExpenseCategories = async () => {
     const response = await axios.get(`expenseCatagories`);
     expenseCategories = response.data.data;
     
-console.log(expenseCategories)
+
 
 };
-console.log(expenseCategories)
 FetchExpenseCategories();
 
 const CreateExpense = async (formData) => {
@@ -112,6 +120,8 @@ const createCategory = async () => {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
             CreateExpense(formData);
+            closePopup();
+
         }
     });
 };
@@ -120,5 +130,9 @@ const rules = {
     required: (value) => !!value || "Category Name is Required.",
     counter: (value) => value.length >= 3 || "Min 3 characters",
 };
+
+// const closePopup=()=>{
+//     this.$emit('closePopup');
+// }
 
 </script>

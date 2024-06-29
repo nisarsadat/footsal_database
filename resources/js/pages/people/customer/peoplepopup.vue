@@ -1,111 +1,85 @@
 <template>
-    <v-dialog v-model="dialog" max-width="600">
-        <v-card>
-            <div class="">
-                <div class="d-flex pb-6 text-3xl font-semibold leading-snug font-serif margin" flat>
-                    <v-card-text class="alph">
-                        ||<strong class="book"><span class="mdi mdi-acount"></span> Customer</strong>
-                    </v-card-text>
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+        <template v-slot:default="{ isActive }">
+            <v-card class="px-3">
+                <v-card-title class="px-6 py-4 d-flex justify-space-between">
+                    <h2>Create</h2>
+
+                    <v-btn variant="text" @click="closePopup"
+                        ><v-icon> mdi-close </v-icon></v-btn
+                    >
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-form ref="formRef">
+                        <v-text-field
+                            v-model="formData.name"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Owener Name *"
+                            class="pb-4"
+                        ></v-text-field>
+                        <!-- <v-textarea
+                            v-model="formData.details"
+                            variant="outlined"
+                            label="Description"
+                        ></v-textarea> -->
+                    </v-form>
+                </v-card-text>
+                <div class="justify-start pl-6 pb-6">
+                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                        >Submit</v-btn
+                    >
                 </div>
-                <form @submit.prevent="submit" class="w-full margin">
-                    <v-text-field
-                        v-model="name"
-                        :counter="10"
-                        :error-messages="nameErrorMessage"
-                        label="Name"
-                        density="compact"
-                        variant="outlined"
-                    ></v-text-field>
-
-                    <v-text-field
-                        v-model="phone"
-                        :counter="7"
-                        :error-messages="phoneErrorMessage"
-                        label="Phone Number"
-                        variant="outlined"
-                        type="number"
-                    ></v-text-field>
-
-                    <v-btn class="me-4" type="submit">Submit</v-btn>
-                    <v-btn @click="handleReset">Clear</v-btn>
-                </form>
-            </div>
-            <v-card-actions class="margin">
-                <v-spacer></v-spacer>
-                <v-btn class="hoverred  mdi mdi-close-circle-outline text-10xl"  text @click="closeDialog" >Close</v-btn>
-            </v-card-actions>
-        </v-card>
+            </v-card>
+        </template>
     </v-dialog>
 </template>
+<script setup>
+let dailog = defineProps("dailog");
+import { data } from "autoprefixer";
+import { reactive, ref } from "vue";
+const formRef = ref(null);
+const formData = reactive({
+    name: "",
+});
 
-<script>
-import { useField, useForm } from 'vee-validate';
+const emit = defineEmits(['closePopup']);
 
-export default {
-    name: 'PeoplePopup',
-    data() {
-        return {
-            dialog: false,
-        };
-    },
-    methods: {
-        closeDialog() {
-            this.dialog = false;
-        },
-        openDialog() {
-            this.dialog = true;
-        },
-    },
-    setup() {
-        const { handleSubmit, handleReset } = useForm({
-            validationSchema: {
-                name(value) {
-                    if (value?.length >= 2) return true;
-                    return 'Name needs to be at least 2 characters.';
-                },
-                phone(value) {
-                    if (value?.length >= 9 && /[0-9-]+/.test(value)) return true;
-                    return 'Phone number needs to be at least 9 digits.';
-                },
-            },
-        });
+const closePopup = () => {
+    emit('closePopup');
+};
 
-        const nameField = useField('name');
-        const phoneField = useField('phone');
 
-        const name = nameField.value;
-        const nameErrorMessage = nameField.errorMessage;
+const CreateCategory = async (formData) => {
+    console.log(formData);
 
-        const phone = phoneField.value;
-        const phoneErrorMessage = phoneField.errorMessage;
+    const config = {
+        method: "POST",
+        url: "/owners",
+        data: formData,
+    };
 
-        const submit = handleSubmit((values) => {
-            alert(JSON.stringify(values, null, 2));
-        });
+    const response = await axios(config);
 
-        return { name, nameErrorMessage, phone, phoneErrorMessage, submit, handleReset };
-    },
+    this.loading = false;
+    this.fetchOwners({
+        page: this.page,
+        itemsPerPage: this.itemsPerPage,
+    });
+};
+function createCategory() {
+    formRef.value.validate().then((validate) => {
+        if (validate.valid) {
+            CreateCategory(formData);
+            closePopup();
+
+        }
+    });
+}
+
+const rules = {
+    required: (value) => !!value || "Category Name is Required.",
+    counter: (value) => value.length >= 3 || "Min 3 characters",
 };
 </script>
-
-<style scoped>
-.book {
-    font-size: 18px;
-    font-weight: bolder;
-    letter-spacing: 12px;
-    line-height: 3;
-}
-.alph {
-    font-size: 18px;
-    font-weight: bolder;
-    line-height: 3;
-}
-.hoverred:hover
-{
-    color: rgb(225, 0, 0);
-}
-
-
-
-
-</style>

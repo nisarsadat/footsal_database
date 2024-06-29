@@ -16,8 +16,16 @@
                             v-model="formData.name"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Category Name *"
+                            label="Owener Name *"
                             class="pb-4"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.phone"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Phone *"
+                            class="pb-4"
+                            type="number"
                         ></v-text-field>
                         <!-- <v-textarea
                             v-model="formData.details"
@@ -27,7 +35,9 @@
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                    <v-btn
+                        color="light-blue-darken-1"
+                        @click="createCategory"
                         >Submit</v-btn
                     >
                 </div>
@@ -39,31 +49,30 @@
 let dailog = defineProps("dailog");
 import { data } from "autoprefixer";
 import { reactive, ref } from "vue";
+const emit = defineEmits(["closePopup"]);
+
+const closePopup = () => {
+    emit("closePopup");
+};
+
 const formRef = ref(null);
 const formData = reactive({
     name: "",
+    phone: "",
 });
-
-const emit = defineEmits(['closePopup']);
-
-const closePopup = () => {
-    emit('closePopup');
-};
-
-
 const CreateCategory = async (formData) => {
     console.log(formData);
 
     const config = {
         method: "POST",
-        url: "/expenseCatagories",
+        url: "/customers",
         data: formData,
     };
 
     const response = await axios(config);
 
     this.loading = false;
-    this.fetchExpenseCategories({
+    this.fetchCustomers({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
@@ -73,7 +82,9 @@ function createCategory() {
         if (validate.valid) {
             CreateCategory(formData);
             closePopup();
-            }
+
+        }
+
     });
 }
 
