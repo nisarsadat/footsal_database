@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCatagoryController;
@@ -26,7 +27,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('/customers', CustomerController::class);
 Route::apiResource('/halls', HallController::class);
 Route::apiResource('/bookings', BookingController::class);
 Route::apiResource('/payments', PaymentController::class);
@@ -42,6 +42,35 @@ Route::post('gymnasia/{gymnasium}', [GymnasiumController::class, 'updateGymnasiu
     //     return $request->user();
     // });
     // gymnasia
+
+    // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    //     Route::apiResource('/customers', CustomerController::class);
+
+    // });
+
+
+
+Route::group(['middleware'=>['auth:sanctum']],function () {
+    Route::apiResource('/customers', CustomerController::class);
+    Route::post('logout', [AuthController::class, 'logout']);
+
+
+});
+
+
+
+
+
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+
+
+
+
+
+
 
 
 

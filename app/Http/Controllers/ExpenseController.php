@@ -54,8 +54,13 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
+<<<<<<< HEAD
         return "ok";
         // $expense->load('expenseCatagory'); // Eager load the relationships
+=======
+
+        $expense->load('expenseCatagory'); // Eager load the relationships
+>>>>>>> 2ad567d3c53fd07d14bf18c8a031b776b3b859dd
 
         // return new ExpenseResource($expense);
     }

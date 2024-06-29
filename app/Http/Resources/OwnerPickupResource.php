@@ -16,12 +16,12 @@ class OwnerPickupResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'amount' => $this->amount,
             'note' => $this->note,
             'date' => $this->date,
             'owner' => [
-                'id' => $this->owner->id,
-                'name' => $this->owner->name,
+                'id' => $this->owner->id??null,
+                'name' => $this->owner->name??null,
             ],         ];    }
 }
 
