@@ -52,7 +52,7 @@ Route::post('gymnasia/{gymnasium}', [GymnasiumController::class, 'updateGymnasiu
 
 
 Route::group(['middleware'=>['auth:sanctum']],function () {
-    // Route::apiResource('/customers', CustomerController::class);
+    // Route::apiResource('/customers', CustomerController::cla ss);
 
     Route::post('logout', [AuthController::class, 'logout']);
 
