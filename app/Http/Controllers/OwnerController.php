@@ -20,7 +20,7 @@ class OwnerController extends Controller
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
-        $bookings = Owner::with([])->paginate($perPage);
+        $bookings = Owner::with([])->orderBy('id', 'desc')->paginate($perPage);
 
         // Return paginated collection of BookingResource
         return OwnerResource::collection($bookings);

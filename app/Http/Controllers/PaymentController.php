@@ -19,7 +19,7 @@ class PaymentController extends Controller
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
-        $bookings = Payment::with([])->paginate($perPage);
+        $bookings = Payment::with([])->orderBy('id', 'desc')->paginate($perPage);
 
         // Return paginated collection of BookingResource
         return PaymentResource::collection($bookings);

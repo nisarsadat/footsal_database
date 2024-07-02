@@ -21,7 +21,7 @@ class HallController extends Controller
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
-        $hallRow = Hall::with([])->paginate($perPage);
+        $hallRow = Hall::with([])->orderBy('id', 'desc')->paginate($perPage);
 
         // Return paginated collection of BookingResource
         return HallResource::collection($hallRow);

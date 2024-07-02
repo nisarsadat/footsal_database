@@ -20,8 +20,8 @@ class ExpenseResource extends JsonResource
             'note' => $this->note,
             'date' => $this->date,
             'expenseCatagory' => [
-                'id' => $this->expenseCatagory->id,
-                'name' => $this->expenseCatagory->name,
+                'id' => $this->expenseCatagory->id??null,
+                'name' => $this->expenseCatagory->name??null,
             ],
         ];
     }

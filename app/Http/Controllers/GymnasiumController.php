@@ -19,7 +19,7 @@ class GymnasiumController extends Controller
         $perPage = $request->query('perPage', 10);
 
         // Fetch paginated bookings
-        $bookings = Gymnasium::with([])->paginate($perPage);
+        $bookings = Gymnasium::with([])->orderBy('id', 'desc')->paginate($perPage);
 
         // Return paginated collection of BookingResource
         return GymnasiumResource::collection($bookings);

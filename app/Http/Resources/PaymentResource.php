@@ -22,9 +22,9 @@ class PaymentResource extends JsonResource
             'payed' => $this->payed,
             'date' => $this->date,
             'booking' => [
-                'id'=>$this->booking->id,
-                'name'=>$this->booking->price,
-                'date'=>$this->booking->date,
+                'id'=>$this->booking->id??null,
+                'name'=>$this->booking->price??null,
+                'date'=>$this->booking->date??null,
 
 
             ],

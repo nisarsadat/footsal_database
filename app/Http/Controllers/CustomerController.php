@@ -22,7 +22,7 @@ class CustomerController extends Controller
     $perPage = $request->query('perPage', 10);
 
     // Fetch paginated bookings
-    $customer = Customer::with(['bookings'])->paginate($perPage);
+    $customer = Customer::with(['bookings'])->orderBy('id', 'desc')->paginate($perPage);
 
     // Return paginated collection of BookingResource
     return CustomerResource::collection($customer);
