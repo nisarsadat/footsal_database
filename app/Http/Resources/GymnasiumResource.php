@@ -15,7 +15,8 @@ class GymnasiumResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'path' => $this->path ? asset('/storage' . $this->path) : null,
+            'id'=>$this->id,
+            'path' => $this->path ? asset('/storage/' . $this->path) : null,
             'name' => $this->name ? $this->name  :  null,
             'note' => $this->note ? $this->note  :  null,
         ];

@@ -51,6 +51,9 @@ Route::post('gymnasia/{gymnasium}', [GymnasiumController::class, 'updateGymnasiu
 
 
 
+
+
+
 Route::group(['middleware'=>['auth:sanctum']],function () {
     // Route::apiResource('/customers', CustomerController::cla ss);
 

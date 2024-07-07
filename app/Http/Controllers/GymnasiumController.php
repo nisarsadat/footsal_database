@@ -54,7 +54,7 @@ class GymnasiumController extends Controller
         // Validate the incoming request using the StoreGymnasiumRequest rules
         $request->validate([
             'name' => 'required|string|max:255',
-            'path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'note' => 'required|string',
         ]);
 
