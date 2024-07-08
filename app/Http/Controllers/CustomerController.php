@@ -14,13 +14,13 @@ class CustomerController extends Controller
 
 
 
-    public function __construct()
-    {
-        $this->middleware('permission:view customers')->only(['index', 'show']);
-        $this->middleware('permission:create customers')->only(['store']);
-        $this->middleware('permission:edit customers')->only(['update']);
-        $this->middleware('permission:delete customers')->only(['destroy']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('permission:view customers')->only(['index', 'show']);
+    //     $this->middleware('permission:create customers')->only(['store']);
+    //     $this->middleware('permission:edit customers')->only(['update']);
+    //     $this->middleware('permission:delete customers')->only(['destroy']);
+    // }
     /**
      * Display a listing of the resource.
      */
