@@ -50,7 +50,7 @@ class BookingResource extends JsonResource
             'discount' => $this->discount,
             'stuffsRent' => $this->stuffs_rent,
             'total' => $this->total,
-            'grandTotal' => $this->payed,
+            'payed' => $this->payed,
             'due' => $this->due,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
