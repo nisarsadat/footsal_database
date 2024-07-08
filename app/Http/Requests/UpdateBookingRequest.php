@@ -27,12 +27,13 @@ class UpdateBookingRequest extends FormRequest
             'customer_id'=>"required|integer",
             'hall_id'=>"required|integer",
             'price'=>"required|integer",
+            'booking_name'=>"string",
             'from'=>"required",
             'to'=>"required",
             'date'=>"required|date",
             'discount'=>"numeric",
             'stuffs_rent'=>"numeric",
-            'grand_total'=>"numeric",
+            'payed'=>"numeric",
             'due'=>"numeric",
             'total'=>"numeric",
             //
@@ -45,6 +46,7 @@ class UpdateBookingRequest extends FormRequest
         $this->merge([
             'customer_id' => $this->input('customerId'),
             'hall_id' => $this->input('hallId'),
+            'booking_name' => $this->input('bookingName'),
             'stuffs_rent' => $this->input('stuffsRent'),
         ]);}
 }

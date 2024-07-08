@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Http\Resources\PaymentResource;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 
@@ -45,8 +46,32 @@ class PaymentController extends Controller
          // return "abc";
          $validatedDate=$request->validated();
          $payment=Payment::create($validatedDate);
-         return response()->json(["data"=>$payment]);
+        //  return response()->json(["data"=>$payment]);
+        //  dd($payment);
+
+
+
+
+
+
+         $booking = Booking::findOrFail($validatedDate['booking_id']);
+        //  $payment = $booking->update([
+        //     'payed' =>$payment->payed, // Use the payed value from validatedData
+        // ]);
+        $booking->update([
+            'payed' => $booking->payed + $payment->payed,
+            'due' =>$booking->total - ($booking->payed + $payment->payed),
+        ]);
+
+        // Return the newly created payment resource
+        return new PaymentResource($payment);
     }
+
+
+
+
+
+
 
     /**
      * Display the specified resource.

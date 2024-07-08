@@ -21,7 +21,7 @@ class Booking extends Model
         'date',
         'discount',
         'stuffs_rent',
-        'grand_total',
+        'payed',
         'due',
         'total',
 

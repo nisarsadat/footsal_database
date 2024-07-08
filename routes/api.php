@@ -11,6 +11,7 @@ use App\Http\Controllers\HallController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\OwnerPickupController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserController;
 use App\Models\ExpenseCatagory;
 use App\Models\Gymnasium;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::apiResource('/users', UserController::class);
 Route::apiResource('/customers', CustomerController::class);
 Route::apiResource('/halls', HallController::class);
 Route::apiResource('/bookings', BookingController::class);

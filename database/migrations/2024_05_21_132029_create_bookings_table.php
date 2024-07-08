@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Customer::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(\App\Models\Hall::class)->constrained()->onDelete('cascade');
+            $table->string("booking_name");
             $table->time("from");
             $table->time("to");
             $table->date("date");
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->unsignedInteger("discount");
             $table->unsignedInteger("stuffs_rent");
             $table->unsignedInteger("due")->nullable();
-            $table->unsignedInteger("grand_total")->nullable();
+            $table->unsignedInteger("payed")->nullable();
             $table->unsignedInteger("total");
             $table->softDeletes();
 

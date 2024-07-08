@@ -6,6 +6,7 @@ use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -41,22 +42,60 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookingRequest $request)
-    {
 
-        $validatedDate=$request->validated();
-          // Calculate grand_total and due
-        $validatedDate['grand_total'] = $validatedDate['price'] + $validatedDate['stuffs_rent'] - $validatedDate['discount'];
-        $validatedDate['due'] = $validatedDate['grand_total'] - $validatedDate['total'];
+
+
+
+     public function store(StoreBookingRequest $request)
+{
+    // Validate the request data
+    $validatedData = $request->validated();
+
+    // Calculate payed and due amounts
+    $validatedData['total'] = $validatedData['price'] + $validatedData['stuffs_rent'] - $validatedData['discount'];
+    $validatedData['due'] = $validatedData['total'] - $validatedData['payed'];
+    // return "ok";
 
     // Create a new booking using the validated data
-        $booking = Booking::create($validatedDate);
+    $booking = Booking::create($validatedData);
+
+    // Create a payment associated with the booking
+    $payment = Payment::create([
+        'booking_id' => $booking->id,
+        'payed' =>$booking->payed, // Use the payed value from validatedData
+        'date' => $booking->date,   // Ensure 'date' is in validatedData
+    ]);
+
+    // Return the newly created booking resource
+    return new BookingResource($booking);
+}
+
+    // public function store(StoreBookingRequest $request)
+    // {
+
+    //     $validatedDate=$request->validated();
+    //       // Calculate payed and due
+    //     $validatedDate['payed'] = $validatedDate['price'] + $validatedDate['stuffs_rent'] - $validatedDate['discount'];
+    //     $validatedDate['due'] = $validatedDate['payed'] - $validatedDate['total'];
+
+    // // Create a new booking using the validated data
+    //     $booking = Booking::create($validatedDate);
+
+    //     // return "ok";
+    //     // return $booking->id;
+    //     $payment=Payment::create([
+    //         "booking_id"=>$booking->id,
+    //         "payed"=>$booking->$validatedDate['payed'] ,
+    //         "date"=>$booking->date,
+
+    //     ]);
 
 
-        return new BookingResource($booking);
 
-        // return response()->json(["data"=>$booking]);
-    }
+    //     return new BookingResource($booking);
+
+    //     // return response()->json(["data"=>$booking]);
+    // }
 
 
 
