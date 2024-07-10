@@ -47,11 +47,10 @@ class AuthController extends Controller
 
             'user'=>$user,
             'token'=>$token
-
-
-
         ];
-        return response($response,201);
+        $user->syncRoles(["boos","employee"]);
+        return response([$user->getRoleNames(),$response]);
+        // return response($response,201);
 
 
     }

@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PermissionRequest;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 
-class PermissionController extends Controller
+class RollController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
@@ -31,7 +27,6 @@ class PermissionController extends Controller
             'name' => $validatedData['name'],
             'guard_name' => $validatedData['guard_name'],
         ]);
-        // return "ok";
 
         return response()->json($permission, 201);
     }
@@ -71,4 +66,5 @@ class PermissionController extends Controller
         return "deleted".$id;
 
     }
+
 }

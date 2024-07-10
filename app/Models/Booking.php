@@ -24,6 +24,7 @@ class Booking extends Model
         'payed',
         'due',
         'total',
+        'booking_name'
 
     ];
 

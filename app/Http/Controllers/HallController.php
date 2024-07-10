@@ -10,6 +10,32 @@ use Illuminate\Http\Request;
 
 class HallController extends Controller
 {
+
+
+
+
+
+    public function __construct()
+    {
+        $this->middleware('permission:hall update')->only(['index', 'show']);
+        $this->middleware('permission:hall write')->only(['store']);
+        $this->middleware('permission:hall edit')->only(['update']);
+        $this->middleware('permission:hall delete')->only(['destroy']);
+    }
+
+
+
+    // public function __construct()
+    // {
+    //     $this->middleware('permission:view customers')->only(['index', 'show']);
+    //     $this->middleware('permission:create customers')->only(['store']);
+    //     $this->middleware('permission:edit customers')->only(['update']);
+    //     $this->middleware('permission:delete customers')->only(['destroy']);
+    // }
+
+
+
+
     /**
      * Display a listing of the resource.
      */
