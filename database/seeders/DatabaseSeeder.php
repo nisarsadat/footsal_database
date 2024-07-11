@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Owner::factory(3)->create();
         \App\Models\OwnerPickup::factory(3)->create();
         \App\Models\Gymnasium::factory(3)->create();
+        \App\Models\User::factory(3)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

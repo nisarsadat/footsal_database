@@ -71,7 +71,7 @@ class UserController extends Controller
             'token'=>$token
         ];
 
-        $user->syncRoles(["manager"]);
+        // $user->syncRoles(["manager"]); # it is very important to authorization ,after coming on satarday uncomment it
 
         return response($response,201);
 
