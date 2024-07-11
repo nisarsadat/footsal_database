@@ -38,6 +38,7 @@ class BookingFactory extends Factory
             'discount'=>fake()->numberBetween($min=1,$max=90000),
             'stuffs_rent'=>fake()->numberBetween($min=1,$max=90000),
             'total'=>fake()->numberBetween($min=1,$max=900000),
+            'booking_name'=>fake()->name(),
 
             //
         ];
