@@ -80,7 +80,9 @@ Route::apiResource('/users', UserController::class);
 Route::apiResource('/bookings', BookingController::class);
 Route::apiResource('/payments', PaymentController::class);
 Route::apiResource('/expenses', ExpenseController::class);
-Route::apiResource('/expenseCategories', ExpenseCatagoryController::class);
+Route::apiResource('/expenseCategories', ExpenseCatagoryController::class); # be care here i have solved this problem by adding some codes on appServiceProvider like boot() and route::model...
+#the problem where here that when we write /expenseCategories as route so it will generete the parameter by the name of expenseCategory as Model instanse no what you write like this public function show(ExpenseCatagory $expenseCatagory here here here expenseCatagory )
+
 Route::apiResource('/owners', OwnerController::class);
 Route::apiResource('/ownerPickups', OwnerPickupController::class);
 Route::apiResource('/gymnasia', GymnasiumController::class);
