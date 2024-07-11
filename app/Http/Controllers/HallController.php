@@ -15,13 +15,13 @@ class HallController extends Controller
 
 
 
-    public function __construct()
-    {
-        $this->middleware('permission:hall update')->only(['index', 'show']);
-        $this->middleware('permission:hall write')->only(['store']);
-        $this->middleware('permission:hall edit')->only(['update']);
-        $this->middleware('permission:hall delete')->only(['destroy']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('permission:hall update')->only(['index', 'show']);
+    //     $this->middleware('permission:hall write')->only(['store']);
+    //     $this->middleware('permission:hall edit')->only(['update']);
+    //     $this->middleware('permission:hall delete')->only(['destroy']);
+    // }
 
 
 
