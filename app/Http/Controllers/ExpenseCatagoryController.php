@@ -23,7 +23,7 @@ class ExpenseCatagoryController extends Controller
         $expenseCatagory = ExpenseCatagory::with([])->orderBy('id', 'desc')->paginate($perPage);
 
         // Return paginated collection of BookingResource
-        return ExpenseCatagoryResource::collection($expenseCatagory);
+        return ExpenseCatagoryResource::collection($expenseCatagory)??null;
         // $expenseCatagory= ExpenseCatagory::all();
         // return response()->json(["data"=>$expenseCatagory]);
 
