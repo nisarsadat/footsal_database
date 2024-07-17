@@ -1,5 +1,5 @@
 <template>
-    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="props">
         <template v-slot:default="{ isActive }">
             <v-card class="px-3">
                 <v-card-title class="px-6 py-4 d-flex justify-space-between">
@@ -17,18 +17,36 @@
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
                             label="Owener Name *"
-                            density="compact"
                             class="pb-4"
+                            density="compact"
                         ></v-text-field>
-                        <!-- <v-textarea
+                        <v-text-field
+                            v-model="formData.amount"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Amount *"
+                            class="pb-4"
+                            density="compact"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.date"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Date*"
+                            class="pb-4"
+                            density="compact"
+                        ></v-text-field>
+                        <v-textarea
                             v-model="formData.details"
                             variant="outlined"
                             label="Description"
-                        ></v-textarea> -->
+                            class="pb-4"
+                            density="compact"
+                        ></v-textarea>
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                    <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
                         >Submit</v-btn
                     >
                 </div>
@@ -37,29 +55,50 @@
     </v-dialog>
 </template>
 <script setup>
-import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css";
-let dailog = defineProps("dailog");
+import { ref, reactive, watch, defineProps, defineEmits } from "vue";
+const props = defineProps({
+    dailog: Boolean, // Assuming dailog is of Boolean type
+    owner: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+// console.log(this.owner ,'m' )/
 import { data } from "autoprefixer";
-import { reactive, ref } from "vue";
 const formRef = ref(null);
 const formData = reactive({
     name: "",
+    amount: "",
+    date: "",
+    note: "",
 });
 
-const emit = defineEmits(["closePopup"]);
+const emit = defineEmits(["closePopup", "updateOwner"]);
+
+// Watch for changes in props.owner and update formData accordingly
+watch(
+    () => props.owner,
+    (newOwner) => {
+        formData.name = newOwner.name || "";
+        formData.amount = newOwner.amount || "";
+        formData.date = newOwner.date || "";
+        formData.note = newOwner.note || "";
+
+    },
+    { immediate: true }
+);
 
 const closePopup = () => {
     emit("closePopup");
 };
 
-const CreateCategory = async (formData) => {
-    console.log(formData);
+const updateCatagory = async (newOwner) => {
+    console.log(newOwner);
 
     const config = {
         method: "POST",
         url: "/owners",
-        data: formData,
+        data: newOwner,
     };
 
     const response = await axios(config);
@@ -69,16 +108,12 @@ const CreateCategory = async (formData) => {
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
-    x;
 };
-function createCategory() {
+function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            CreateCategory(formData);
+            updateCatagory(newOwner);
             closePopup();
-            toast.success("Expense Succesfully Created", {
-                autoClose: 1000,
-            });
         }
     });
 }

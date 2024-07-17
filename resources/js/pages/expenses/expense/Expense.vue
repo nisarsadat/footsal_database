@@ -1,7 +1,8 @@
 z
 <template>
     <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
-    <div class="relative sm:rounded-lg mt-20 p-12">
+    <Head  />
+    <div class="relative sm:rounded-lg  p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Expenses" subTitle="All Expense" />
         <v-layout class="py-5">
@@ -84,12 +85,16 @@ z
     </div>
 </template>
 <script>
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 import Header from "../../../components/Header.vue";
 import Popup from "./expensetable.vue";
+import Head from "../../../components/head.vue";
 export default {
     components: {
         Header,
         Popup,
+        Head,
     },
     data: () => ({
         headers: [
@@ -99,7 +104,6 @@ export default {
                 sortable: false
             },
             { title: "Amount", key: "amount", sortable: false },
-            { title: "Note", key: "note", sortable: false },
             { title: "Date", key: "date", sortable: false },
             { title: "Action", key: "actions", sortable: false, align: "end" }
         ],
@@ -132,6 +136,15 @@ export default {
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
+            Toastify({
+                text: "Deleted successfully!",
+                duration: 4000,
+                close: true,
+                backgroundColor:
+                    "linear-gradient(to right, #F31A1A)",
+                className: "info",
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+            }).showToast();
         },
 
         // Temaplate Function
@@ -141,10 +154,14 @@ export default {
 
         closebtn() {
             this.createDailog = false;
+            this.Fetchexpenses({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
         },
     },
 
     mounted() {},
 };
 </script>
-<style></style>
+

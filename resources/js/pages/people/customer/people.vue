@@ -1,5 +1,7 @@
 <template>
-    <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn"/>
+    <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :owner="owner"/>
+
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="People" subTitle="Owner" />
@@ -50,7 +52,7 @@
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -62,9 +64,7 @@
                                                 <v-list-item-title
                                                     class="cursor-pointer d-flex gap-3"
                                                     @click="
-                                                    DeleteOwners(
-                                                            item.id
-                                                        )
+                                                        DeleteOwners(item.id)
                                                     "
                                                 >
                                                     <v-icon color="gray"
@@ -87,10 +87,15 @@
 <script>
 import Header from "../../../components/Header.vue";
 import Create from "./peoplepopup.vue";
+import Update from "./Update.vue";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
+
 export default {
     components: {
         Header,
         Create,
+        Update,
     },
     data: () => ({
         headers: [
@@ -98,12 +103,14 @@ export default {
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
+        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         dailog: false,
         totalItems: 0,
         owners: [],
+        owner: [],
     }),
     methods: {
         async FetchOwners({ page, itemsPerPage }) {
@@ -117,11 +124,25 @@ export default {
             this.loading = false;
             this.dailog = false;
         },
+        async FetchOwner(id) {
+
+            const response = await axios.get(
+                `owners/${id}`
+            );
+            this.owner = response.data.data;
+        },
         async DeleteOwners(id) {
             const config = {
                 method: "DELETE",
                 url: "owners/" + id,
             };
+            Toastify({
+                text: "Deleted successfully!",
+                duration: 4000,
+                close: true,
+                className: "info",
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+            }).showToast();
 
             const response = await axios(config);
             this.FetchOwners({
@@ -134,8 +155,31 @@ export default {
         createPopUp() {
             this.createDailog = true;
         },
+        edit(item) {
+           console.log(item)
+
+           this.FetchOwner(item.id);
+            this.updateDailog = true;
+
+        },
+        closeupdate(){
+            this.updateDailog= false;
+        },
         closebtn() {
             this.createDailog = false;
+            Toastify({
+                text: "Action completed successfully!",
+                duration: 3000,
+                close: true,
+                backgroundColor: "#089",
+                className: "info",
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+
+            }).showToast();
+            this.FetchOwners({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
         },
     },
 

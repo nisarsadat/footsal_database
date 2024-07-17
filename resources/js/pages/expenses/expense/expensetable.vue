@@ -22,7 +22,7 @@
                             density="compact"
                             :items="expenseCategories"
                             item-title="name"
-                            item-value="id"
+                            item-value="name"
                             :rules="[rules.required]"
                             :return-object="false"
                         ></v-autocomplete>
@@ -65,9 +65,14 @@
     </v-dialog>
 </template>
 <script setup>
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 let dailog = defineProps("dailog");
 import { reactive, ref } from "vue";
 import { defineEmits } from 'vue';
+
+
+let expenseCategories = reactive([]);
 
 const emit = defineEmits(['closePopup']);
 
@@ -76,7 +81,6 @@ const closePopup = () => {
 };
 
 const formRef = ref(null);
-let expenseCategories = reactive([]);
 const formData = reactive({
     expenseCatagoryId: "",
     note: "",
@@ -84,11 +88,8 @@ const formData = reactive({
     date: "",
 });
 const FetchExpenseCategories = async () => {
-    const response = await axios.get(`expenseCatagories`);
+    const response = await axios.get(`expenseCategories`);
     expenseCategories = response.data.data;
-    
-
-
 };
 FetchExpenseCategories();
 
@@ -113,6 +114,15 @@ const CreateExpense = async (formData) => {
     //     page: this.page,
     //     itemsPerPage: this.itemsPerPage,
     // });
+    Toastify({
+                text: "Deleted successfully!",
+                duration: 4000,
+                close: true,
+                backgroundColor:
+                    "linear-gradient(to right, #F31A1A)",
+                className: "info",
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+            }).showToast();
 };
 
 

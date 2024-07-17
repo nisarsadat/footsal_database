@@ -2,7 +2,7 @@
     <div class="head">
         <strong
             ><h1>
-                ||<span class="mdi mdi-home"></span>
+                |||||<span class="mdi mdi-plus">>></span>
                 F
 
                 <span class="mdi mdi-soccer"></span>
@@ -12,13 +12,15 @@
         </strong>
     </div>
 </template>
+<script>
+
+</script>
 <style>
 .head {
     font-family: sans-serif;
-    margin-left: 100px;
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 .head h1 {
     margin-bottom: 12px;

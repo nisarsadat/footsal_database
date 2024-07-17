@@ -1,11 +1,8 @@
-
 <template>
-    <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
-    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :ownerPickup="ownerPickup"/>
-    <Head/>
+    <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Expenses" subTitle="Owner Pick Up" />
+        <Header mainTitle="People" subTitle="Users" />
         <v-layout class="py-5">
             <v-row class="justify-space-between">
                 <v-col cols="12" sm="3"> </v-col>
@@ -31,10 +28,10 @@
                                 v-model:items-per-page="itemsPerPage"
                                 :headers="headers"
                                 :items-length="totalItems"
-                                :items="ownerPickups"
+                                :items="users"
                                 :loading="loading"
-                                item-value="ownerPickupsId"
-                                @update:options="FetchownerPickups"
+                                item-value="id"
+                                @update:options="FetchRegister"
                                 hover
                             >
                                 <template
@@ -53,7 +50,7 @@
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="edit(item)"
+                                                    @click="editItem(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -65,7 +62,7 @@
                                                 <v-list-item-title
                                                     class="cursor-pointer d-flex gap-3"
                                                     @click="
-                                                        DeleteownerPickups(item.id)
+                                                        DeleteRegister(item.id)
                                                     "
                                                 >
                                                     <v-icon color="gray"
@@ -86,65 +83,47 @@
     </div>
 </template>
 <script>
-import Header from "../../../components/Header.vue";
-import Head from "../../../components/head.vue"
-import Popup from "./owenerpickuptable.vue";
+import Header from "../../components/Header.vue";
+import Create from "./popup.vue";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
-import Update from "./Update.vue";
 export default {
     components: {
         Header,
-        Popup,
-        Head,
-        Update,
+        Create,
     },
     data: () => ({
         headers: [
-            { title: "Owner Name", key: "owner.name", sortable: false },
-            { title: "amount", key: "amount", sortable: false },
-            { title: "date", key: "date", sortable: false },
+            { title: "Name", key: "name", sortable: false },
+            { title: "Email", key: "email", sortable: false },
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
-        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         totalItems: 0,
-        ownerPickups: [],
-        ownerPickup: [],
-
+        users: [],
     }),
     methods: {
-        async FetchownerPickups({ page, itemsPerPage }) {
+        async FetchRegister({ page, itemsPerPage }) {
             this.loading = true;
 
             const response = await axios.get(
-                `ownerPickups?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
-
+                `users?page=${page}&perPage=${itemsPerPage}`
             );
-            this.ownerPickups = response.data.data;
+            this.users = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
         },
-        async FetchownerPickup(id) {
-
-            const response = await axios.get(
-                `ownerPickups/${id}`
-
-            );
-            this.ownerPickup = response.data.data;
-
-        },
-        async DeleteownerPickups(id) {
+        async DeleteRegister(id) {
             const config = {
                 method: "DELETE",
-                url: "ownerPickups/" + id,
+                url: "users/" + id,
             };
 
             const response = await axios(config);
-            this.FetchownerPickups({
+            this.FetchRegister({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
@@ -156,31 +135,17 @@ export default {
                     "linear-gradient(to right, #F31A1A)",
                 className: "info",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
-
             }).showToast();
         },
-        edit(item) {
-           console.log(item)
-
-           this.FetchownerPickup(item.id);
-           this.updateDailog = true;
-
-
-
-        },
-        closeupdate(){
-            this.updateDailog= false;
-        },
- 
 
         // Temaplate Function
         createPopUp() {
             this.createDailog = true;
-        },
 
+        },
         closebtn() {
             this.createDailog = false;
-            this.FetchownerPickups({
+            this.FetchRegister({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
@@ -190,4 +155,3 @@ export default {
     mounted() {},
 };
 </script>
-

@@ -134,6 +134,10 @@ export default {
         },
         closebtn() {
             this.createDailog = false;
+            this.FetchHalls({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
         },
     },
 

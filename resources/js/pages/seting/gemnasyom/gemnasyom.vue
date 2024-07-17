@@ -92,8 +92,8 @@ export default {
     },
     data: () => ({
         headers: [
-            { title: "Name", key: "name", sortable: false },
             { title: "Path", key: "path", sortable: false },
+            { title: "Name", key: "name", sortable: false },
             { title: "Note", key: "note", sortable: false },
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
@@ -101,7 +101,6 @@ export default {
         itemsPerPage: 5,
         page: 1,
         loading: false,
-        dailog: false,
         totalItems: 0,
         gymnasia: [],
     }),
@@ -135,6 +134,10 @@ export default {
         },
         closebtn() {
             this.createDailog = false;
+            this.FetchGymnasia({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
         },
     },
 

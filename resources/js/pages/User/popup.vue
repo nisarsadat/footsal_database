@@ -16,22 +16,35 @@
                             v-model="formData.name"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Hall Name *"
+                            label="Name *"
                             density="compact"
                             class="pb-4"
                         ></v-text-field>
-                        <v-autocomplete
-                            v-model="formData.size"
-                            clearable
+                        <v-text-field
+                            v-model="formData.email"
                             variant="outlined"
-                            label="Hall Size*"
+                            :rules="[rules.required, rules.counter]"
+                            label="Email*"
                             density="compact"
-                            :items="HallSize"
-                            item-title="size"
-                            item-value="size"
-                            :rules="[rules.required]"
-                            :return-object="false"
-                        ></v-autocomplete>
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.password"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Email Password*"
+                            density="compact"
+                            class="pb-4"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.password_confirmation"
+                            variant="outlined"
+                            :rules="[rules.required, rules.counter]"
+                            label="Type Again Your Password*"
+                            density="compact"
+                            class="pb-4"
+                        ></v-text-field>
+
                         <!-- <v-textarea
                             v-model="formData.details"
                             variant="outlined"
@@ -51,41 +64,49 @@
 <script setup>
 let dailog = defineProps("dailog");
 import { data } from "autoprefixer";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 import { reactive, ref } from "vue";
 const formRef = ref(null);
 const formData = reactive({
     name: "",
-    size: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
 });
 
-const emit = defineEmits(['closePopup']);
+const emit = defineEmits(["closePopup"]);
 
 const closePopup = () => {
-    emit('closePopup');
+    emit("closePopup");
 };
-let HallSize = reactive(["SMALL", "LARG" , "XLARG"]);
+let HallSize = reactive([]);
 
 const FetchhallSizes = async () => {
+    const response = await axios.get(`users`);
     HallSize = response.data.data;
-    
-
-
 };
 FetchhallSizes();
-
 
 const CreateCategory = async (formData) => {
     console.log(formData);
 
     const config = {
         method: "POST",
-        url: "/halls",
+        url: "/users",
         data: formData,
     };
 
     const response = await axios(config);
+    Toastify({
+        text: "Added successfully!",
+        duration: 4000,
+        close: true,
+        backgroundColor: "linear-gradient(to right, #F31A1A)",
+        className: "info",
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+    }).showToast();
 
-    this.loading = false;
     this.fetchHalls({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
@@ -96,7 +117,6 @@ function createCategory() {
         if (validate.valid) {
             CreateCategory(formData);
             closePopup();
-
         }
     });
 }
