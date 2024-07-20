@@ -62,6 +62,8 @@
     </v-dialog>
 </template>
 <script setup>
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 let dailog = defineProps("dailog");
 import { reactive, ref } from "vue";
 import { defineEmits } from "vue";
@@ -107,7 +109,33 @@ const CreateownerPickups = async (formData) => {
     //     page: this.page,
     //     itemsPerPage: this.itemsPerPage,
     // });
+    Toastify({
+                text: "Added OwnerPickUp successfully!",
+                duration: 4000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor:
+                    "linear-gradient(to right, #F31A1A)",
+                className: "info",
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background:
+                        "linear-gradient(to right, #F31A1A)",
+                    color: "black",
+                    fontSize: "16px",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid #ffffff50",
+                },
+            }).showToast();
 };
+
+
+
+
+
+
 
 const createOwnerPickups = async () => {
     formRef.value.validate().then((validate) => {

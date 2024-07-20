@@ -18,6 +18,7 @@
                             :rules="[rules.required, rules.counter]"
                             label="Category Name *"
                             class="pb-4"
+                            density="compact"
                         ></v-text-field>
                         <!-- <v-textarea
                             v-model="formData.details"
@@ -36,46 +37,53 @@
     </v-dialog>
 </template>
 <script setup>
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 let dailog = defineProps("dailog");
-import { data } from "autoprefixer";
 import { reactive, ref } from "vue";
 const formRef = ref(null);
 const formData = reactive({
     name: "",
 });
 
-const emit = defineEmits(['closePopup']);
+const emit = defineEmits(["closePopup"]);
 
 const closePopup = () => {
-    emit('closePopup');
+    emit("closePopup");
 };
 
-
 const CreateCategory = async (formData) => {
-    console.log(formData);
-
     const config = {
         method: "POST",
-        url: "/expenseCatagories",
+        url: "expenseCatagories",
         data: formData,
     };
-
     const response = await axios(config);
-
-    this.loading = false;
-    this.fetchExpenseCategories({
-        page: this.page,
-        itemsPerPage: this.itemsPerPage,
+    toast.success("Expense Succesfully Created", {
+        autoClose: 1000,
     });
+    // this.router.push("/allExpenses");
+    // this.fetchExpenses({
+    //     page: this.page,
+    //     itemsPerPage: this.itemsPerPage,
+    // });
+    // Toastify({
+    //     text: "Deleted successfully!",
+    //     duration: 4000,
+    //     close: true,
+    //     backgroundColor: "linear-gradient(to right, #F31A1A)",
+    //     className: "info",
+    //     stopOnFocus: true, // Prevents dismissing of toast on hover
+    // }).showToast();
 };
 function createCategory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
             CreateCategory(formData);
             closePopup();
-            }
+        }
     });
-}
+};
 
 const rules = {
     required: (value) => !!value || "Category Name is Required.",

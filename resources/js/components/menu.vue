@@ -32,25 +32,7 @@
                         class="hover"
                     ></v-list-item>
                 </template>
-                <v-list-group value="createexpense" class="hover">
-                    <template v-slot:activator="{ props }">
-                        <router-link to="/createexpense" class="textD">
-                            <v-list-item
-                                prepend-icon="mdi mdi-expansion-card-variant"
-                                v-bind="props"
-                                title="Create Expence"
-                            ></v-list-item>
-                        </router-link>
-                    </template>
 
-                    <v-list-item
-                        v-for="([title, icon], i) in admins"
-                        :key="i"
-                        :prepend-icon="icon"
-                        :title="title"
-                        :value="title"
-                    ></v-list-item>
-                </v-list-group>
                 <v-list-group value="allepense" class="hover">
                     <template v-slot:activator="{ props }">
                         <router-link to="/expense" class="textD">
@@ -164,11 +146,13 @@
 
                 <v-list-group value="user" class="hover">
                     <template v-slot:activator="{ props }">
-                        <v-list-item
-                            prepend-icon="mdi mdi-account"
-                            v-bind="props"
-                            title="User"
-                        ></v-list-item>
+                        <router-link to="/user">
+                            <v-list-item
+                                prepend-icon="mdi mdi-account"
+                                v-bind="props"
+                                title="User"
+                            ></v-list-item>
+                        </router-link>
                     </template>
 
                     <v-list-item

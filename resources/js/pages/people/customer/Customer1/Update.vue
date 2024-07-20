@@ -1,5 +1,5 @@
 <template>
-    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="props">
         <template v-slot:default="{ isActive }">
             <v-card class="px-3">
                 <v-card-title class="px-6 py-4 d-flex justify-space-between">
@@ -16,22 +16,18 @@
                             v-model="formData.name"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Hall Name *"
-                            density="compact"
+                            label="Customer Name *"
                             class="pb-4"
-                        ></v-text-field>
-                        <v-autocomplete
-                            v-model="formData.size"
-                            clearable
-                            variant="outlined"
-                            label="Hall Size*"
                             density="compact"
-                            :items="HallSize"
-                            item-title="size"
-                            item-value="size"
-                            :rules="[rules.required]"
-                            :return-object="false"
-                        ></v-autocomplete>
+                        ></v-text-field>
+                        <v-text-field
+                        v-model="formData.phone"
+                        variant="outlined"
+                        :rules="[rules.required, rules.counter]"
+                        label="Customer phone *"
+                        class="pb-4"
+                        density="compact"
+                    ></v-text-field>
                         <!-- <v-textarea
                             v-model="formData.details"
                             variant="outlined"
@@ -40,7 +36,7 @@
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                    <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
                         >Submit</v-btn
                     >
                 </div>
@@ -49,54 +45,58 @@
     </v-dialog>
 </template>
 <script setup>
-let dailog = defineProps("dailog");
+import { ref, reactive, watch, defineProps, defineEmits } from 'vue';
+const props = defineProps({
+  dailog: Boolean, // Assuming dailog is of Boolean type
+  customer: {
+    type: Object,
+    default: () => ({})
+  }
+});
+// console.log(this.owner ,'m' )/
 import { data } from "autoprefixer";
-import { reactive, ref } from "vue";
 const formRef = ref(null);
 const formData = reactive({
-    name: "",
-    size: "",
+    name:"",
+    phone:"",
 });
 
-const emit = defineEmits(['closePopup']);
+const emit = defineEmits(['closePopup', 'updateOwner']);
+
+
+// Watch for changes in props.owner and update formData accordingly
+watch(() => props.customer, (newCustomer) => {
+  formData.name = newCustomer.name || '';
+  formData.phone = newCustomer.phone || '';
+
+}, { immediate: true });
 
 const closePopup = () => {
-    emit('closePopup');
+  emit('closePopup');
 };
-let HallSize = reactive(["SMALL", "LARG" , "XLARG"]);
 
-const FetchhallSizes = async () => {
-    HallSize = response.data.data;
-    
-
-
-};
-FetchhallSizes();
-
-
-const CreateCategory = async (formData) => {
-    console.log(formData);
+const updateCatagory = async (newCustomer) => {
+    console.log(newCustomer);
 
     const config = {
         method: "POST",
-        url: "/halls",
-        data: formData,
+        url: "/customer",
+        data: newCustomer,
     };
 
     const response = await axios(config);
 
     this.loading = false;
-    this.fetchHalls({
+    this.fetchOwners({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
 };
-function createCategory() {
+function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            CreateCategory(formData);
+            updateCatagory(newOwner);
             closePopup();
-
         }
     });
 }

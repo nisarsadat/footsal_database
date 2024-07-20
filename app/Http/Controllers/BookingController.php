@@ -8,6 +8,7 @@ use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -20,9 +21,16 @@ class BookingController extends Controller
     $perPage = $request->query('perPage', 10);
 
     // Fetch paginated bookings
-    $bookings = Booking::with(['customer', 'hall'])
-        ->orderBy('id', 'desc')
+    $bookings = Booking::latest('id')->with('customer', 'hall')
         ->paginate($perPage);
+
+// =============================================
+// $bookings = Booking::with(['customer', 'hall'])
+// ->orderBy('id', 'desc')
+// ->paginate($perPage);
+// =============================================
+
+
         // Return paginated collection of BookingResource
     return BookingResource::collection($bookings);
 
@@ -105,11 +113,19 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
+
         // dd($Booking);
 
-        $booking->load('customer', 'hall'); // Eager load the relationships
+        // $booking->load('customer', 'hall'); // Eager load the relationships\
+
 
         return new BookingResource($booking);
+// ========================================================
+
+        // return new BookingResource($booking); main
+
+
+// ========================================================
 
         // $booking = Booking::with(['customer', 'hall'])->findOrFail($booking->id);
         // return new BookingResource($booking);

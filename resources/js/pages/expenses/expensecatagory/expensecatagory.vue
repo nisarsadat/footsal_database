@@ -1,6 +1,7 @@
 <template>
-    <Create v-if="createDailog" :dailog="createDailog"  @closePopup="closebtn"/>
-    <div class="relative sm:rounded-lg mt-20 p-12">
+    <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Head />
+    <div class="relative sm:rounded-lg  p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Expenses" subTitle="Expense Category" />
         <v-layout class="py-5">
@@ -28,7 +29,7 @@
                                 v-model:items-per-page="itemsPerPage"
                                 :headers="headers"
                                 :items-length="totalItems"
-                                :items="expenseCategories"
+                                :items="expenseCatagories"
                                 :loading="loading"
                                 item-value="id"
                                 @update:options="FetchExpenseCategories"
@@ -87,10 +88,12 @@
 <script>
 import Header from "../../../components/Header.vue";
 import Create from "./Create.vue";
+import Head from "../../../components/head.vue"
 export default {
     components: {
         Header,
         Create,
+        Head,
     },
     data: () => ({
         headers: [
@@ -101,18 +104,18 @@ export default {
         itemsPerPage: 5,
         page: 1,
         loading: false,
-        dailog: false,
         totalItems: 0,
-        expenseCategories: [],
+        dailog: false,
+        expenseCatagories: [],
     }),
     methods: {
         async FetchExpenseCategories({ page, itemsPerPage }) {
             this.loading = true;
 
             const response = await axios.get(
-                `expenseCatagories?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+                `expenseCategories?page=${page}&perPage=${itemsPerPage}`
             );
-            this.expenseCategories = response.data.data;
+            this.expenseCatagories = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
         },
@@ -135,7 +138,10 @@ export default {
         },
         closebtn() {
             this.createDailog = false;
-
+            this.FetchExpenseCategories({
+                page: this.page,
+                itemsPerPage: this.itemsPerPage,
+            });
         },
     },
 
