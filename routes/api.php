@@ -4,9 +4,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCatagoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExpenseReportController;
 use App\Http\Controllers\GymnasiumController;
 use App\Http\Controllers\HallController;
 use App\Http\Controllers\OwnerController;
@@ -26,8 +28,10 @@ use Illuminate\Support\Facades\Route;
 
 // =============================================new ==================================================================
 use App\Http\Controllers\GymnasiamController;
-
+use App\Http\Controllers\OwnerPickupReportController;
+use App\Http\Controllers\profitAndLossController;
 use App\Models\ExpenseCatagory;
+use App\Models\ExpenseReport;
 use App\Models\Gymnasium;
 
 /*
@@ -87,6 +91,33 @@ Route::apiResource('/owners', OwnerController::class);
 Route::apiResource('/ownerPickups', OwnerPickupController::class);
 Route::apiResource('/gymnasia', GymnasiumController::class);
 Route::apiResource('/halls', HallController::class);
+
+
+
+
+Route::apiResource('/expenseReports', ExpenseReportController::class);
+Route::get('expenseReports/{data}', [ExpenseReportController::class, 'getExpenseByCategory']);
+
+// =========
+// Route::apiResource('/ownerPickupReports', OwnerPickupReportController::class);
+// ========
+Route::apiResource('/ownerPickupReports', OwnerPickupReportController::class);
+Route::post('ownerPickupReports/', [OwnerPickupReportController::class, 'getOwnerPickupReportAll']);
+// Route::get('ownerPickupReports/', [OwnerPickupReportController::class, 'getOwnerPickupReportByOwner']);
+
+
+// Route::get('/getExpensesByCategory{name}', [ExpenseReportController::class, 'getExpensesByCategory']);
+// Route::get('/reports', [ExpenseReportController::class, 'getExpensesByCatagory']);
+Route::post('test', [ExpenseReportController::class, 'test']);
+
+// =====================test==========================================================
+// Route::post('reports', [ExpenseReportController::class, 'getExpenseByCategory']);
+// Route::get('reports', [ExpenseReportController::class, 'getExpenseByCategory']);
+// =====================test==========================================================
+Route::apiResource('/bookingReports', BookingReportController::class);
+Route::apiResource('/profitAndLosses', profitAndLossController::class);
+
+
 // Public route for customers (no authentication required)
 
 

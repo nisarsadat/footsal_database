@@ -28,6 +28,11 @@ class Booking extends Model
 
     ];
 
+    // ===============================================
+    // protected $with=['hall','customers','booking']; just for testing eager loading if we want to load on every time related things to a record
+    // ===============================================
+
+
 
 
     public function customer()
