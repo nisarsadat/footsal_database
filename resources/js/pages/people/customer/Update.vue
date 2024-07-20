@@ -51,6 +51,9 @@ const formRef = ref(null);
 const formData = reactive({
     name:"",
 });
+const newOwner = reactive({
+    name:"",
+});
 
 const emit = defineEmits(['closePopup', 'updateOwner']);
 
@@ -75,7 +78,6 @@ const updateCatagory = async (newOwner) => {
 
     const response = await axios(config);
 
-    this.loading = false;
     this.fetchOwners({
         page: this.page,
         itemsPerPage: this.itemsPerPage,

@@ -97,7 +97,7 @@ export default {
         headers: [
             {
                 title: "Booking Name",
-                key: "booking.id",
+                key: "booking.name",
                 sortable: false,
             },
             { title: "Payed", key: "payed", sortable: false },

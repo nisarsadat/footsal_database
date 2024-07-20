@@ -1,5 +1,6 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :user="user"/>
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="People" subTitle="Users" />
@@ -31,7 +32,7 @@
                                 :items="users"
                                 :loading="loading"
                                 item-value="id"
-                                @update:options="FetchRegister"
+                                @update:options="FetchRegisters"
                                 hover
                             >
                                 <template
@@ -50,7 +51,7 @@
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -85,12 +86,15 @@
 <script>
 import Header from "../../components/Header.vue";
 import Create from "./popup.vue";
+import Update from "./Update.vue";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+
 export default {
     components: {
         Header,
         Create,
+        Update,
     },
     data: () => ({
         headers: [
@@ -99,14 +103,16 @@ export default {
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
+        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         totalItems: 0,
         users: [],
+        user:[],
     }),
     methods: {
-        async FetchRegister({ page, itemsPerPage }) {
+        async FetchRegisters({ page, itemsPerPage }) {
             this.loading = true;
 
             const response = await axios.get(
@@ -116,6 +122,12 @@ export default {
             this.totalItems = response.data.meta.total;
             this.loading = false;
         },
+        async Fetchregister(id) {
+            const response = await axios.get(
+                `users/${id}`
+            );
+            this.user = response.data.data;
+        },
         async DeleteRegister(id) {
             const config = {
                 method: "DELETE",
@@ -123,7 +135,7 @@ export default {
             };
 
             const response = await axios(config);
-            this.FetchRegister({
+            this.FetchRegisters({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
@@ -145,10 +157,23 @@ export default {
         },
         closebtn() {
             this.createDailog = false;
-            this.FetchRegister({
+            this.FetchRegisters({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
+        },
+        edit(item) {
+
+           console.log(item)
+
+           this.Fetchregister(item.id);
+           this.updateDailog = true;
+
+
+
+        },
+        closeupdate(){
+            this.updateDailog= false;
         },
     },
 
