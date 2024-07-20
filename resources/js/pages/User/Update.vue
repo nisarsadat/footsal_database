@@ -1,5 +1,5 @@
 <template>
-    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="props">
         <template v-slot:default="{ isActive }">
             <v-card class="px-3">
                 <v-card-title class="px-6 py-4 d-flex justify-space-between">
@@ -17,34 +17,33 @@
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
                             label="Name *"
-                            density="compact"
                             class="pb-4"
+                            density="compact"
                         ></v-text-field>
                         <v-text-field
                             v-model="formData.email"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
                             label="Email*"
-                            density="compact"
                             class="pb-4"
+                            density="compact"
                         ></v-text-field>
                         <v-text-field
                             v-model="formData.password"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Email Password*"
-                            density="compact"
+                            label="New Password *"
                             class="pb-4"
+                            density="compact"
                         ></v-text-field>
                         <v-text-field
                             v-model="formData.password_confirmation"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Type Again Your Password*"
-                            density="compact"
+                            label="New Password Confamation*"
                             class="pb-4"
+                            density="compact"
                         ></v-text-field>
-
                         <!-- <v-textarea
                             v-model="formData.details"
                             variant="outlined"
@@ -53,7 +52,7 @@
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                    <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
                         >Submit</v-btn
                     >
                 </div>
@@ -62,51 +61,63 @@
     </v-dialog>
 </template>
 <script setup>
-let dailog = defineProps("dailog");
-import { data } from "autoprefixer";
-import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css";
-import { reactive, ref } from "vue";
+import { ref, reactive, watch, defineProps, defineEmits } from "vue";
+const props = defineProps({
+    dailog: Boolean, // Assuming dailog is of Boolean type
+    user: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+// console.log(this.owner ,'m' )/
 const formRef = ref(null);
 const formData = reactive({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    name:"",
+    email:"",
+    password:"",
+    password_confirmation:"",
 });
 
-const emit = defineEmits(["closePopup"]);
+const emit = defineEmits(["closePopup", "updateOwner"]);
+
+// Watch for changes in props.user and update formData accordingly
+watch(
+    () => props.user,
+    (newUser) => {
+        formData.name = newUser.name || "";
+        formData.email = newUser.email || "";
+        formData.password = newUser.password || "";
+        formData.password_confirmation = newUser.password_confirmation || "";
+    },
+    { immediate: true }
+);
+console.log(formData);
+
 
 const closePopup = () => {
     emit("closePopup");
 };
 
-
-
-
-const CreateCategory = async (formData) => {
-    console.log(formData);
+const updateCatagory = async (newUser) => {
+    console.log(newUser);
 
     const config = {
         method: "POST",
         url: "/users",
-        data: formData,
+        data: newUser,
     };
 
     const response = await axios(config);
-    Toastify({
-        text: "Added successfully!",
-        duration: 4000,
-        close: true,
-        backgroundColor: "linear-gradient(to right, #F31A1A)",
-        className: "info",
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-    }).showToast();
+
+    this.FetchRegisters({
+        page: this.page,
+        itemsPerPage: this.itemsPerPage,
+    });
 };
-function createCategory() {
+function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            CreateCategory(formData);
+            updateCatagory(newUser);
             closePopup();
         }
     });

@@ -156,7 +156,7 @@ export default {
             this.createDailog = true;
         },
         edit(item) {
-           console.log(item)
+           console.log(item.id)
 
            this.FetchOwner(item.id);
             this.updateDailog = true;
