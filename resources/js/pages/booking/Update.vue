@@ -1,5 +1,5 @@
 <template>
-    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="props">
         <template v-slot:default="{ isActive }">
             <v-card class="px-3">
                 <v-card-title class="px-6 py-4 d-flex justify-space-between">
@@ -103,11 +103,16 @@
                             type="date"
                             class="pb-4"
                         ></v-text-field>
+                        <!-- <v-textarea
+                            v-model="formData.details"
+                            variant="outlined"
+                            label="Description"
+                        ></v-textarea> -->
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory"
-                        >Submit</v-btn
+                    <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
+                        >Update</v-btn
                     >
                 </div>
             </v-card>
@@ -115,34 +120,56 @@
     </v-dialog>
 </template>
 <script setup>
-import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css";
-let dailog = defineProps("dailog");
-import { reactive, ref } from "vue";
-import { defineEmits } from "vue";
-import axios from "axios";
+import { ref, reactive, watch, defineProps, defineEmits } from 'vue';
+const props = defineProps({
+  dailog: Boolean, // Assuming dailog is of Boolean type
+  booking: {
+    type: Object,
+    default: () => ({})
+  }
+});
+// console.log(this.owner ,'m' )/
+import { data } from "autoprefixer";
+const formRef = ref(null);
+const formData = reactive({
+    hallId:"",
+    customerId:"",
+    bookingName:"",
+    FROM:"",
+    TO:"",
+    PRICE:"",
+    Date:"",
+    discount:"",
+    total:"",
+    due:"",
 
-const emit = defineEmits(["closePopup"]);
+});
+const newBooking = reactive({
+    name:"",
+});
+
+const emit = defineEmits(['closePopup', 'updateOwner']);
+
+
+// Watch for changes in props.owner and update formData accordingly
+watch(() => props.booking, (newBooking) => {
+  formData.hallId = newBooking.hallId || '';
+  formData.customerId = newBooking.customerId || '';
+  formData.bookingName = newBooking.bookingName || '';
+  formData.from = newBooking.from || '';
+  formData.to = newBooking.to || '';
+  formData.price = newBooking.price || '';
+  formData.discount = newBooking.discount || '';
+  formData.total = newBooking.total || '';
+  formData.due = newBooking.due || '';
+  formData.date = newBooking.date || '';
+  formData.stuffsRent = newBooking.stuffsRent || '';
+  formData.payed = newBooking.payed || '';
+}, { immediate: true });
 
 const closePopup = () => {
-    emit("closePopup");
+  emit('closePopup');
 };
-
-const formRef = ref(null);
-
-
-const formData = reactive({
-    hallId: "",
-    customerId: "",
-    bookingName: "",
-    price: "",
-    date: "",
-    from: "",
-    to: "",
-    discount: "",
-    stuffsRent: "",
-    payed:"",
-});
 let Halls = reactive([]);
 let Customers = reactive([]);
 const FetchHalls = async () => {
@@ -157,54 +184,33 @@ const FetchCustomers = async () => {
 };
 FetchCustomers();
 
-const CreateExpense = async (formData) => {
-    console.log(formData);
-    // Adding a custom header to the Axios request
-    // setContentType("application/json");
+const updateCatagory = async (newBooking) => {
+    console.log(newBooking);
+
     const config = {
         method: "POST",
-        url: "bookings",
-
-        data: formData,
+        url: "/owners",
+        data: newBooking,
     };
 
-
-    // Using Axios to make a GET request with async/await and custom headers
     const response = await axios(config);
-    // toast.success("Expense Succesfully Created", {
-    //     autoClose: 1000,
-    // });
-    // this.router.push("/allExpenses");
-    // this.fetchExpenses({
-    //     page: this.page,
-    //     itemsPerPage: this.itemsPerPage,
-    // });
-    Toastify({
-                text: "Customer Added successfully!",
-                duration: 3000,
-                close: true,
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
-                className: "info",
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-            }).showToast();
-};
 
-const createCategory = async () => {
+    this.fetchBookings({
+        page: this.page,
+        itemsPerPage: this.itemsPerPage,
+    });
+};
+function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            CreateExpense(formData);
+            updateCatagory(newBooking);
             closePopup();
         }
     });
-};
+}
 
 const rules = {
     required: (value) => !!value || "Category Name is Required.",
     counter: (value) => value.length >= 3 || "Min 3 characters",
 };
-
-// const closePopup=()=>{
-//     this.$emit('closePopup');
-// }
 </script>

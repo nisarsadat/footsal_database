@@ -1,5 +1,6 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :hall="hall"/>
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Setting" subTitle="Halls" />
@@ -50,7 +51,7 @@
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -85,10 +86,12 @@
 <script>
 import Header from "../../../components/Header.vue";
 import Create from "./popup.vue";
+import Update from "./Update.vue";
 export default {
     components: {
         Header,
         Create,
+        Update,
     },
     data: () => ({
         headers: [
@@ -97,12 +100,14 @@ export default {
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
+        updateDailog:false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         dailog: false,
         totalItems: 0,
         halls: [],
+        hall:[],
     }),
     methods: {
         async FetchHalls({ page, itemsPerPage }) {
@@ -115,6 +120,13 @@ export default {
             this.totalItems = response.data.meta.total;
             this.loading = false;
         },
+        async FetchHall(id) {
+
+            const response = await axios.get(
+                `halls/${id}`
+            );
+            this.hall = response.data.data;
+        },
         async DeleteHalls(id) {
             const config = {
                 method: "DELETE",
@@ -126,6 +138,15 @@ export default {
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
+        },
+        edit(item) {
+           console.log(item)
+
+           this.FetchHall(item.id);
+           this.updateDailog = true;
+        },
+        closeupdate(){
+            this.updateDailog= false;
         },
 
         // Temaplate Function

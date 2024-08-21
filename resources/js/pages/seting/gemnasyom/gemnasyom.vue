@@ -1,5 +1,11 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :gem="gem"
+    />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Setting" subTitle="Gemnasyom" />
@@ -50,7 +56,7 @@
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -85,10 +91,12 @@
 <script>
 import Header from "../../../components/Header.vue";
 import Create from "./popup.vue";
+import Update from "./Update.vue";
 export default {
     components: {
         Header,
         Create,
+        Update,
     },
     data: () => ({
         headers: [
@@ -98,11 +106,13 @@ export default {
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
+        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         totalItems: 0,
         gymnasia: [],
+        gem: [],
     }),
     methods: {
         async FetchGymnasia({ page, itemsPerPage }) {
@@ -114,6 +124,10 @@ export default {
             this.gymnasia = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
+        },
+        async FetchGymnasi(id) {
+            const response = await axios.get(`gymnasia/${id}`);
+            this.gem = response.data.data;
         },
         async DeleteGymnasia(id) {
             const config = {
@@ -128,6 +142,15 @@ export default {
             });
         },
 
+        edit(item) {
+            this.updateDailog = true;
+
+            console.log(item);
+            this.FetchGymnasi(item.id);
+        },
+        closeupdate() {
+            this.updateDailog = false;
+        },
         // Temaplate Function
         createPopUp() {
             this.createDailog = true;

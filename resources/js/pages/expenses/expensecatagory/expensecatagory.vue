@@ -1,7 +1,13 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :catagory="catagory"
+    />
     <Head />
-    <div class="relative sm:rounded-lg  p-12">
+    <div class="relative sm:rounded-lg p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Expenses" subTitle="Expense Category" />
         <v-layout class="py-5">
@@ -51,7 +57,7 @@
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -86,14 +92,18 @@
     </div>
 </template>
 <script>
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 import Header from "../../../components/Header.vue";
 import Create from "./Create.vue";
-import Head from "../../../components/head.vue"
+import Head from "../../../components/head.vue";
+import Update from "./Update.vue";
 export default {
     components: {
         Header,
         Create,
         Head,
+        Update,
     },
     data: () => ({
         headers: [
@@ -107,22 +117,28 @@ export default {
         totalItems: 0,
         dailog: false,
         expenseCatagories: [],
+        catagory: [],
+        updateDailog: false,
     }),
     methods: {
         async FetchExpenseCategories({ page, itemsPerPage }) {
             this.loading = true;
 
             const response = await axios.get(
-                `expenseCategories?page=${page}&perPage=${itemsPerPage}`
+                `expenseCategories?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
             );
             this.expenseCatagories = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
         },
+        async FetchExpenseCategorie(id) {
+            const response = await axios.get(`expenseCategories/${id}`);
+            this.catagory = response.data.data;
+        },
         async DeleteExpenseCategory(id) {
             const config = {
                 method: "DELETE",
-                url: "expenseCatagories/" + id,
+                url: "expenseCategories/" + id,
             };
 
             const response = await axios(config);
@@ -130,6 +146,21 @@ export default {
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,
             });
+            Toastify({
+                text: "Delleted successfully!",
+                duration: 4000,
+                close: true,
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+            }).showToast();
+        },
+        edit(item) {
+            console.log(item);
+
+            this.FetchExpenseCategorie(item.id);
+            this.updateDailog = true;
+        },
+        closeupdate() {
+            this.updateDailog = false;
         },
 
         // Temaplate Function

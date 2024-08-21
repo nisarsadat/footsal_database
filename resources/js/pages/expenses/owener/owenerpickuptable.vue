@@ -75,13 +75,14 @@ const closePopup = () => {
 };
 
 const formRef = ref(null);
-let ownerPickupsId = reactive([]);
+
 const formData = reactive({
     ownerId: "",
     note: "",
     amount: "",
     date: "",
 });
+let ownerPickupsId = reactive([]);
 const FetchOwnerPickupsId = async () => {
     const response = await axios.get(`owners`);
     ownerPickupsId = response.data.data;
@@ -113,30 +114,9 @@ const CreateownerPickups = async (formData) => {
                 text: "Added OwnerPickUp successfully!",
                 duration: 4000,
                 close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
-                className: "info",
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                    background:
-                        "linear-gradient(to right, #F31A1A)",
-                    color: "black",
-                    fontSize: "16px",
-                    borderRadius: "8px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    border: "1px solid #ffffff50",
-                },
+                stopOnFocus: true, // Prevents dismissing of toast on hover       
             }).showToast();
 };
-
-
-
-
-
-
-
 const createOwnerPickups = async () => {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {

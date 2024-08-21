@@ -37,7 +37,7 @@
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
                     <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
-                        >Submit</v-btn
+                        >Update</v-btn
                     >
                 </div>
             </v-card>

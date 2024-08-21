@@ -29,7 +29,7 @@
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
                     <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
-                        >Submit</v-btn
+                        >Update</v-btn
                     >
                 </div>
             </v-card>
@@ -71,7 +71,7 @@ const updateCatagory = async (newOwner) => {
     console.log(newOwner);
 
     const config = {
-        method: "POST",
+        method: "PUT",
         url: "/owners",
         data: newOwner,
     };
@@ -90,7 +90,7 @@ function UpdateCatagory() {
             closePopup();
         }
     });
-}
+};
 
 const rules = {
     required: (value) => !!value || "Category Name is Required.",

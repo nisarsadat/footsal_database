@@ -16,39 +16,22 @@
                             v-model="formData.name"
                             variant="outlined"
                             :rules="[rules.required, rules.counter]"
-                            label="Name *"
+                            label="Hall Name *"
                             density="compact"
                             class="pb-4"
                         ></v-text-field>
-                        <v-text-field
-                            v-model="formData.email"
+                        <v-autocomplete
+                            v-model="formData.size"
+                            clearable
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Email*"
+                            label="Hall Size*"
                             density="compact"
-                            class="pb-4"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model="formData.password"
-                            variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Email Password*"
-                            density="compact"
-                            class="pb-4"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model="formData.password_confirmation"
-                            variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Type Again Your Password*"
-                            density="compact"
-                            class="pb-4"
-                        ></v-text-field>
-                        <!-- <v-textarea
-                            v-model="formData.details"
-                            variant="outlined"
-                            label="Description"
-                        ></v-textarea> -->
+                            :items="HallSize"
+                            item-title="size"
+                            item-value="size"
+                            :rules="[rules.required]"
+                            :return-object="false"
+                        ></v-autocomplete>
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
@@ -64,59 +47,48 @@
 import { ref, reactive, watch, defineProps, defineEmits } from "vue";
 const props = defineProps({
     dailog: Boolean, // Assuming dailog is of Boolean type
-    upuser: {
+    hall: {
         type: Object,
         default: () => ({}),
     },
 });
-const formRef = ref(null);
+// console.log(this.owner ,'m' )/
 import { data } from "autoprefixer";
+const formRef = ref(null);
 const formData = reactive({
     name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    size: "",
 });
-const newUser = reactive({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-});
-
+let HallSize = reactive(["SMALL", "LARG" , "XLARG"]);
 const emit = defineEmits(["closePopup", "updateOwner"]);
-console.log(formData);
 
-// Watch for changes in props.user and update formData accordingly
+// Watch for changes in props.owner and update formData accordingly
 watch(
-    () => props.upuser,
-    (newUser) => {
-        formData.name = newUser.name || "";
-        formData.email = newUser.email || "";
-        formData.password = newUser.password || "";
-        formData.password_confirmation = newUser.password_confirmation || "";
+    () => props.hall,
+    (newHall) => {
+        formData.name = newHall.name || "";
+        formData.size = newHall.size || "";
     },
     { immediate: true }
 );
-
-console.log(newUser);
 
 const closePopup = () => {
     emit("closePopup");
 };
 
-const updateCatagory = async (newUser) => {
-    console.log(newUser);
+const updateCatagory = async (newHall) => {
+    console.log(newHall);
 
     const config = {
         method: "POST",
-        url: "/users",
-        data: newUser,
+        url: "/halls",
+        data: newHall,
     };
 
     const response = await axios(config);
 
-    this.FetchRegisters({
+    this.loading = false;
+    this.fetchOwners({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
@@ -124,7 +96,7 @@ const updateCatagory = async (newUser) => {
 function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            updateCatagory(newUser);
+            updateCatagory(newHall);
             closePopup();
         }
     });

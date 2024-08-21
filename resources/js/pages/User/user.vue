@@ -1,6 +1,11 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
-    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :user="user"/>
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :upuser="upuser"
+    />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="People" subTitle="Users" />
@@ -103,13 +108,14 @@ export default {
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
-        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         totalItems: 0,
         users: [],
-        user:[],
+        upuser: [],
+        updateDailog: false,
+
     }),
     methods: {
         async FetchRegisters({ page, itemsPerPage }) {
@@ -123,10 +129,8 @@ export default {
             this.loading = false;
         },
         async Fetchregister(id) {
-            const response = await axios.get(
-                `users/${id}`
-            );
-            this.user = response.data.data;
+            const response = await axios.get(`users/${id}`);
+            this.upuser = response.data.data;
         },
         async DeleteRegister(id) {
             const config = {
@@ -143,9 +147,6 @@ export default {
                 text: "Deleted successfully!",
                 duration: 4000,
                 close: true,
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
-                className: "info",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
             }).showToast();
         },
@@ -153,7 +154,6 @@ export default {
         // Temaplate Function
         createPopUp() {
             this.createDailog = true;
-
         },
         closebtn() {
             this.createDailog = false;
@@ -163,17 +163,13 @@ export default {
             });
         },
         edit(item) {
-
-           console.log(item)
-
-           this.Fetchregister(item.id);
-           this.updateDailog = true;
-
-
+            console.log(item);
+            this.updateDailog = true;
+            this.Fetchregister(item.id);
 
         },
-        closeupdate(){
-            this.updateDailog= false;
+        closeupdate() {
+            this.updateDailog = false;
         },
     },
 

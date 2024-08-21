@@ -1,6 +1,12 @@
-z
+
 <template>
     <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :booking="booking"
+    />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Booking" subTitle="BOOKING" />
@@ -51,7 +57,7 @@ z
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -88,22 +94,29 @@ import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import Header from "../../components/Header.vue";
 import Popup from "./bookingpopup.vue";
+import Update from "./Update.vue";
 export default {
     components: {
         Header,
         Popup,
+        Update,
     },
     data: () => ({
         headers: [
             {
+                title: "Booking Name",
+                key: "bookingName",
+                sortable: false,
+            },
+            {
                 title: "Customer Name",
                 key: "customer.name",
-                sortable: false
+                sortable: false,
             },
             {
                 title: "Hall Name",
                 key: "hall.name",
-                sortable: false
+                sortable: false,
             },
             { title: "From", key: "from", sortable: false },
             { title: "To", key: "to", sortable: false },
@@ -112,14 +125,16 @@ export default {
             { title: "Total", key: "total", sortable: false },
             { title: "Due", key: "due", sortable: false },
             { title: "Date", key: "date", sortable: false },
-            { title: "Action", key: "actions", sortable: false, align: "end" }
+            { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
+        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         totalItems: 0,
         bookings: [],
+        booking: [],
     }),
     methods: {
         async Fetchbookings({ page, itemsPerPage }) {
@@ -131,6 +146,10 @@ export default {
             this.bookings = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
+        },
+        async fetchbooking(id) {
+            const response = await axios.get(`bookings/${id}`);
+            this.booking = response.data.data;
         },
         async Deletebookings(id) {
             const config = {
@@ -147,8 +166,6 @@ export default {
                 text: "Deleted successfully!",
                 duration: 4000,
                 close: true,
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
                 className: "info",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
             }).showToast();
@@ -159,6 +176,15 @@ export default {
             this.createDailog = true;
         },
 
+        edit(item) {
+            console.log(item);
+
+            this.fetchbooking(item.id);
+            this.updateDailog = true;
+        },
+        closeupdate() {
+            this.updateDailog = false;
+        },
         closebtn() {
             this.createDailog = false;
             this.Fetchbookings({

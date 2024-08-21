@@ -12,38 +12,44 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <v-form ref="formRef">
-                        <v-text-field
-                            v-model="formData.name"
+                        <v-autocomplete
+                            v-model="formData.expenseCatagoryId"
+                            clearable
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Name *"
+                            label="Expense Category*"
                             density="compact"
+                            :items="expenseCategories"
+                            item-title="name"
+                            item-value="name"
+                            :rules="[rules.required]"
+                            :return-object="false"
+                        ></v-autocomplete>
+                        <v-text-field
+                            v-model="formData.amount"
+                            variant="outlined"
+                            density="compact"
+
+                            label="Amount *"
+                            type="number"
                             class="pb-4"
                         ></v-text-field>
                         <v-text-field
-                            v-model="formData.email"
+                            v-model="formData.date"
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Email*"
                             density="compact"
+
+                            label="Date *"
+                            type="date"
                             class="pb-4"
                         ></v-text-field>
-                        <v-text-field
-                            v-model="formData.password"
+                        <v-textarea
+                            v-model="formData.note"
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Email Password*"
                             density="compact"
+
+                            label="Description *"
                             class="pb-4"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model="formData.password_confirmation"
-                            variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Type Again Your Password*"
-                            density="compact"
-                            class="pb-4"
-                        ></v-text-field>
+                        ></v-textarea>
                         <!-- <v-textarea
                             v-model="formData.details"
                             variant="outlined"
@@ -61,62 +67,65 @@
     </v-dialog>
 </template>
 <script setup>
-import { ref, reactive, watch, defineProps, defineEmits } from "vue";
+import { ref, reactive, watch, defineProps, defineEmits } from 'vue';
+let expenseCategories = reactive([]);
+
+const FetchExpenseCategories = async () => {
+    const response = await axios.get(`expenseCategories`);
+    expenseCategories = response.data.data;
+};
+FetchExpenseCategories();
 const props = defineProps({
-    dailog: Boolean, // Assuming dailog is of Boolean type
-    upuser: {
-        type: Object,
-        default: () => ({}),
-    },
+  dailog: Boolean, // Assuming dailog is of Boolean type
+  expens: {
+    type: Object,
+    default: () => ({})
+  }
 });
-const formRef = ref(null);
+// console.log(this.owner ,'m' )/
 import { data } from "autoprefixer";
+const formRef = ref(null);
 const formData = reactive({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    date:"",
+    note:"",
+    expenseCatagoryId:"",
+    amount:"",
 });
-const newUser = reactive({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+const newExpense = reactive({
+    date:"",
+    note:"",
+    expenseCatagoryId:"",
+    amount:"",
 });
 
-const emit = defineEmits(["closePopup", "updateOwner"]);
-console.log(formData);
+const emit = defineEmits(['closePopup', 'updateOwner']);
 
-// Watch for changes in props.user and update formData accordingly
-watch(
-    () => props.upuser,
-    (newUser) => {
-        formData.name = newUser.name || "";
-        formData.email = newUser.email || "";
-        formData.password = newUser.password || "";
-        formData.password_confirmation = newUser.password_confirmation || "";
-    },
-    { immediate: true }
-);
 
-console.log(newUser);
+// Watch for changes in props.owner and update formData accordingly
+watch(() => props.expens, (newExpense) => {
+  formData.expenseCatagoryId = newExpense.expenseCatagoryId || '';
+  formData.amount = newExpense.amount || '';
+  formData.date = newExpense.date || '';
+  formData.note = newExpense.note || '';
+
+}, { immediate: true });
 
 const closePopup = () => {
-    emit("closePopup");
+  emit('closePopup');
 };
 
-const updateCatagory = async (newUser) => {
-    console.log(newUser);
+const updateCatagory = async (newExpense) => {
+    console.log(newExpense);
 
     const config = {
         method: "POST",
-        url: "/users",
-        data: newUser,
+        url: "/expenses",
+        data: newExpense,
     };
 
     const response = await axios(config);
 
-    this.FetchRegisters({
+    this.fetchBookings({
         page: this.page,
         itemsPerPage: this.itemsPerPage,
     });
@@ -124,7 +133,7 @@ const updateCatagory = async (newUser) => {
 function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            updateCatagory(newUser);
+            updateCatagory(newExpense);
             closePopup();
         }
     });

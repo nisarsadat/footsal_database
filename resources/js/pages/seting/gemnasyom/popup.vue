@@ -91,24 +91,28 @@ import axios from 'axios';
 let imageSrc = ref(null);
 const inputRef = ref(null);
 const onChangeImage = (e) => {
-    imageSrc.value = URL.createObjectURL(e.target.files[0]);
-    formData.path = e.target.files[0];
-};
-const OpenWindow = (action) => {
-    if (action) {
-        ref(action).value.click();
+    const file = e.target.files[0];
+    if (file) {
+        imageSrc.value = URL.createObjectURL(file);  // Set up for preview
+        formData.file = file;  // Store the file for uploading
     }
 };
+const OpenWindow = () => {
+    inputRef.value.click();
+};
 const CloseWindow = () => {
+    if (imageSrc.value) {
+        URL.revokeObjectURL(imageSrc.value);  // Clean up object URL to avoid memory leaks
+    }
     imageSrc.value = null;
-    formData.path = null;
+    formData.file = null;
 };
 
 let dailog = defineProps("dailog");
 const formRef = ref(null);
 const formData = reactive({
     name: "",
-    path: "",  // Changed to 'file' to capture the File object
+    file: null,  // Handle the file object directly
     note: "",
 });
 
@@ -120,22 +124,28 @@ const closePopup = () => {
 
 
 
-const CreateCategory = async (formData) => {
-    console.log(formData);
+// Function to create a category, including uploading a file
+const CreateCategory = async () => {
+    if (await formRef.value.validate()) {
+        const form = new FormData();
+        form.append('name', formData.name);
+        form.append('note', formData.note);
+        if (formData.file) {
+            form.append('file', formData.file);  // Ensure this key matches the backend expectation
+        }
 
-    const config = {
-        method: "POST",
-        url: "/gymnasia",
-        data: formData,
-    };
-
-    const response = await axios(config);
-
-    this.loading = false;
-    this.fetchGymnasia({
-        page: this.page,
-        itemsPerPage: this.itemsPerPage,
-    });
+        try {
+            const response = await axios.post('/gymnasia', form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log('Upload successful', response.data);
+            closePopup();
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    }
 };
 
 const createCategory = () => {

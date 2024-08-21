@@ -12,42 +12,47 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <v-form ref="formRef">
-                        <v-text-field
-                            v-model="formData.name"
+                        <v-autocomplete
+                            v-model="formData.ownerId"
+                            clearable
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Owener Name *"
-                            class="pb-4"
+                            label="Owner Name*"
                             density="compact"
-                        ></v-text-field>
+                            :items="ownerPickupsId"
+                            item-title="name"
+                            item-value="id"
+                            :rules="[rules.required]"
+                            :return-object="false"
+                        ></v-autocomplete>
                         <v-text-field
                             v-model="formData.amount"
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Amount *"
-                            class="pb-4"
                             density="compact"
+                            label="Amount *"
+                            type="number"
+                            class="pb-4"
                         ></v-text-field>
+                        <v-textarea
+                            v-model="formData.note"
+                            variant="outlined"
+                            density="compact"
+                            label="Description *"
+                            class="pb-4"
+                            type="string"
+                        ></v-textarea>
                         <v-text-field
                             v-model="formData.date"
                             variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Date*"
-                            class="pb-4"
                             density="compact"
+                            label="Date *"
+                            type="date"
+                            class="pb-4"
                         ></v-text-field>
-                        <v-textarea
-                            v-model="formData.details"
-                            variant="outlined"
-                            label="Description"
-                            class="pb-4"
-                            density="compact"
-                        ></v-textarea>
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
                     <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
-                        >Submit</v-btn
+                        >Update</v-btn
                     >
                 </div>
             </v-card>
@@ -58,7 +63,7 @@
 import { ref, reactive, watch, defineProps, defineEmits } from "vue";
 const props = defineProps({
     dailog: Boolean, // Assuming dailog is of Boolean type
-    owner: {
+    ownerPickup: {
         type: Object,
         default: () => ({}),
     },
@@ -67,23 +72,28 @@ const props = defineProps({
 import { data } from "autoprefixer";
 const formRef = ref(null);
 const formData = reactive({
+    ownerId:"",
     name: "",
     amount: "",
     date: "",
     note: "",
 });
-
+let ownerPickupsId = reactive([]);
+const FetchOwnerPickupsId = async () => {
+    const response = await axios.get(`owners`);
+    ownerPickupsId = response.data.data;
+};
+FetchOwnerPickupsId();
 const emit = defineEmits(["closePopup", "updateOwner"]);
 
 // Watch for changes in props.owner and update formData accordingly
 watch(
-    () => props.owner,
+    () => props.ownerPickup,
     (newOwner) => {
         formData.name = newOwner.name || "";
         formData.amount = newOwner.amount || "";
         formData.date = newOwner.date || "";
         formData.note = newOwner.note || "";
-
     },
     { immediate: true }
 );

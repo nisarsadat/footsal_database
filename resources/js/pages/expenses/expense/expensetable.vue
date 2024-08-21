@@ -72,7 +72,6 @@ import { reactive, ref } from "vue";
 import { defineEmits } from 'vue';
 
 
-let expenseCategories = reactive([]);
 
 const emit = defineEmits(['closePopup']);
 
@@ -87,6 +86,8 @@ const formData = reactive({
     amount: "",
     date: "",
 });
+let expenseCategories = reactive([]);
+
 const FetchExpenseCategories = async () => {
     const response = await axios.get(`expenseCategories`);
     expenseCategories = response.data.data;
@@ -99,10 +100,10 @@ const CreateExpense = async (formData) => {
     // setContentType("application/json");
     const config = {
         method: "POST",
-        url: "expenses",
-
+        url: "/expenses",
         data: formData,
     };
+
 
     // Using Axios to make a GET request with async/await and custom headers
     const response = await axios(config);
@@ -115,11 +116,9 @@ const CreateExpense = async (formData) => {
     //     itemsPerPage: this.itemsPerPage,
     // });
     Toastify({
-                text: "Deleted successfully!",
+                text: "Added successfully!",
                 duration: 4000,
                 close: true,
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
                 className: "info",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
             }).showToast();

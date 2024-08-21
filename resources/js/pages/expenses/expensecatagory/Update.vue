@@ -1,5 +1,5 @@
 <template>
-    <v-dialog transition="dialog-top-transition" width="600px" v-model="dailog">
+    <v-dialog transition="dialog-top-transition" width="600px" v-model="props">
         <template v-slot:default="{ isActive }">
             <v-card class="px-3">
                 <v-card-title class="px-6 py-4 d-flex justify-space-between">
@@ -13,13 +13,14 @@
                 <v-card-text>
                     <v-form ref="formRef">
                         <v-text-field
-                            v-model="formData.name"
-                            variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Category Name *"
-                            class="pb-4"
-                            density="compact"
-                        ></v-text-field>
+                        v-model="formData.name"
+                        variant="outlined"
+                        :rules="[rules.required, rules.counter]"
+                        label="Category Name *"
+                        class="pb-4"
+                        density="compact"
+                    ></v-text-field>
+
                         <!-- <v-textarea
                             v-model="formData.details"
                             variant="outlined"
@@ -28,8 +29,8 @@
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory"
-                        >Submit</v-btn
+                    <v-btn color="light-blue-darken-1" @click="UpdateCatagory"
+                        >Update</v-btn
                     >
                 </div>
             </v-card>
@@ -37,49 +38,60 @@
     </v-dialog>
 </template>
 <script setup>
-import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css";
-let dailog = defineProps("dailog");
-import { reactive, ref } from "vue";
+import { ref, reactive, watch, defineProps, defineEmits } from 'vue';
+const props = defineProps({
+  dailog: Boolean, // Assuming dailog is of Boolean type
+  catagory: {
+    type: Object,
+    default: () => ({})
+  }
+});
+// console.log(this.owner ,'m' )/
+import { data } from "autoprefixer";
 const formRef = ref(null);
 const formData = reactive({
-    name: "",
+    name:"",
+});
+const newCatagory = reactive({
+    name:"",
 });
 
-const emit = defineEmits(["closePopup"]);
+const emit = defineEmits(['closePopup', 'updateOwner']);
+
+
+// Watch for changes in props.owner and update formData accordingly
+watch(() => props.catagory, (newCatagory) => {
+  formData.name = newCatagory.name || '';
+}, { immediate: true });
 
 const closePopup = () => {
-    emit("closePopup");
+  emit('closePopup');
 };
 
-const CreateCategory = async (formData) => {
+const updateCatagory = async (newCatagory) => {
+    console.log(newCatagory);
+
     const config = {
         method: "POST",
-        url: "expenseCategories",
-        data: formData,
+        url: "/expenseCategories",
+        data: newCatagory,
     };
+
     const response = await axios(config);
 
-    // this.router.push("/allExpenses");
-    // this.fetchExpenses({
-    //     page: this.page,
-    //     itemsPerPage: this.itemsPerPage,
-    // });
-    Toastify({
-        text: "Added successfully!",
-        duration: 4000,
-        close: true,
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-    }).showToast();
+    this.fetchBookings({
+        page: this.page,
+        itemsPerPage: this.itemsPerPage,
+    });
 };
-function createCategory() {
+function UpdateCatagory() {
     formRef.value.validate().then((validate) => {
         if (validate.valid) {
-            CreateCategory(formData);
+            updateCatagory(newCatagory);
             closePopup();
         }
     });
-};
+}
 
 const rules = {
     required: (value) => !!value || "Category Name is Required.",

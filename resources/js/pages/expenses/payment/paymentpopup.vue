@@ -13,7 +13,7 @@
                 <v-card-text>
                     <v-form ref="formRef">
                         <v-autocomplete
-                            v-model="formData.id"
+                            v-model="formData.bookingId"
                             clearable
                             variant="outlined"
                             label="name*"
@@ -52,62 +52,77 @@
     </v-dialog>
 </template>
 <script setup>
-import { ref, reactive, watch, defineProps, defineEmits } from "vue";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
+let dailog = defineProps("dailog");
+import { reactive, ref } from "vue";
+import { defineEmits } from "vue";
 import axios from "axios";
 
-const props = defineProps({
-    dialog: Boolean, // Dialog visibility
-    user: {
-        type: Object,
-        default: () => ({}),
-    },
-});
-
-const emit = defineEmits(["closePopup", "updateOwner"]);
-const formRef = ref(null);
-const formData = reactive({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-});
-
-// Watch for changes in props.user and update formData accordingly
-watch(
-    () => props.user,
-    (newUser) => {
-        if (newUser) {
-            formData.name = newUser.name || "";
-            formData.email = newUser.email || "";
-            formData.password = newUser.password || "";
-            formData.password_confirmation =
-                newUser.password_confirmation || "";
-        }
-    },
-    { immediate: true }
-);
+const emit = defineEmits(["closePopup"]);
 
 const closePopup = () => {
     emit("closePopup");
 };
 
-const updateCategory = async () => {
-    try {
-        // Validate the form
-        const isValid = await formRef.value.validate();
-        if (isValid) {
-            // Make the API call
-            await axios.post("/users", formData);
-            emit("updateOwner"); // Emit updateOwner if needed
+const formRef = ref(null);
+
+const formData = reactive({
+    bookingId: "",
+    date: "",
+    payed: "",
+});
+let Bookings = reactive([]);
+
+const FetchBookings = async () => {
+    const response = await axios.get(`bookings`);
+    Bookings = response.data.data;
+};
+FetchBookings();
+
+const CreateExpense = async (formData) => {
+    console.log(formData);
+    // Adding a custom header to the Axios request
+    // setContentType("application/json");
+    const config = {
+        method: "POST",
+        url: "payments",
+        data: formData,
+    };
+
+    // Using Axios to make a GET request with async/await and custom headers
+    const response = await axios(config);
+    // toast.success("Expense Succesfully Created", {
+    //     autoClose: 1000,
+    // });
+    // this.router.push("/allExpenses");
+    // this.fetchExpenses({
+    //     page: this.page,
+    //     itemsPerPage: this.itemsPerPage,
+    // });
+};
+
+const createCategory = async () => {
+    formRef.value.validate().then((validate) => {
+        if (validate.valid) {
+            CreateExpense(formData);
             closePopup();
+            Toastify({
+                text: "Payment Added successfully!",
+                duration: 3000,
+                close: true,
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+            }).showToast();
         }
-    } catch (error) {
-        console.error("Error updating category:", error);
-    }
+    });
 };
 
 const rules = {
-    required: (value) => !!value || "Field is required.",
+    required: (value) => !!value || "Category Name is Required.",
     counter: (value) => value.length >= 3 || "Min 3 characters",
 };
+
+// const closePopup=()=>{
+//     this.$emit('closePopup');
+// }
 </script>

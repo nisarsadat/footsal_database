@@ -1,6 +1,12 @@
 z
 <template>
     <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :payment="payment"
+    />
     <div class="relative sm:rounded-lg mt-20 p-12">
         <!-- in this part i import header for breadcrumbs  -->
         <Header mainTitle="Booking" subTitle="Payment" />
@@ -51,7 +57,7 @@ z
                                         <v-list>
                                             <v-list-item>
                                                 <v-list-item-title
-                                                    @click="editItem(item)"
+                                                    @click="edit(item)"
                                                     class="cursor-pointer d-flex gap-3 justify-left pb-3"
                                                 >
                                                     <v-icon color="gray"
@@ -88,10 +94,12 @@ import Header from "../../../components/Header.vue";
 import Popup from "./paymentpopup.vue";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import Update from "./Update.vue";
 export default {
     components: {
         Header,
         Popup,
+        Update,
     },
     data: () => ({
         headers: [
@@ -101,15 +109,18 @@ export default {
                 sortable: false,
             },
             { title: "Payed", key: "payed", sortable: false },
+            { title: "Payed Date", key: "booking.date", sortable: false },
             { title: "Date", key: "date", sortable: false },
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
         itemsPerPage: 5,
+        updateDailog: false,
         page: 1,
         loading: false,
         totalItems: 0,
         payments: [],
+        payment: []
     }),
     methods: {
         async Fetchpayments({ page, itemsPerPage }) {
@@ -121,6 +132,10 @@ export default {
             this.payments = response.data.data;
             this.totalItems = response.data.meta.total;
             this.loading = false;
+        },
+        async Fetchpayment(id) {
+            const response = await axios.get(`payments/${id}`);
+            this.payment = response.data.data;
         },
         async Deletepayments(id) {
             const config = {
@@ -137,18 +152,23 @@ export default {
                 text: "Deleted successfully!",
                 duration: 4000,
                 close: true,
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
+                backgroundColor: "linear-gradient(to right, #F31A1A)",
                 className: "info",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
-
             }).showToast();
-
         },
 
         // Temaplate Function
         createPopUp() {
             this.createDailog = true;
+        },
+        edit(item) {
+            console.log(item);
+            this.Fetchpayment(item.id);
+            this.updateDailog = true;
+        },
+        closeupdate() {
+            this.updateDailog = false;
         },
 
         closebtn() {

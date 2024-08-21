@@ -152,9 +152,6 @@ export default {
                 text: "Deleted successfully!",
                 duration: 4000,
                 close: true,
-                backgroundColor:
-                    "linear-gradient(to right, #F31A1A)",
-                className: "info",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
 
             }).showToast();
