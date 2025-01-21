@@ -66,11 +66,7 @@ const props = defineProps({
     default: () => ({})
   }
 });
-const FetchBookings = async () => {
-    const response = await axios.get(`bookings`);
-    Bookings = response.data.data;
-};
-FetchBookings();
+
 // console.log(this.owner ,'m' )/
 import { data } from "autoprefixer";
 const formRef = ref(null);
@@ -82,18 +78,21 @@ const formData = reactive({
     date:"",
 
 });
-const newBooking = reactive({
-    name:"",
-});
+
 
 const emit = defineEmits(['closePopup', 'updateOwner']);
 
 let Bookings = reactive([]);
 
+const FetchBookings = async () => {
+    const response = await axios.get(`bookings`);
+    Bookings = response.data.data;
+};
+FetchBookings();
 
 // Watch for changes in props.owner and update formData accordingly
 watch(() => props.payment, (newPayment) => {
-  formData.bookingName = newBooking.newPayment || '';
+  formData.bookingName = newPayment.booking?.id || '';
   formData.date = newPayment.date || '';
   formData.payed = newPayment.payed || '';
 }, { immediate: true });

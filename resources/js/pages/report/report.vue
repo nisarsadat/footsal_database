@@ -1,6 +1,16 @@
 <template>
-     <div class="d-flex pb-6 text-3xl font-semibold leading-snug font-serif" flat>
-            <v-card-text class="alph">||<strong class="book">   REPORT</strong></v-card-text>
+    <div class="bg-white rounded-xl">
+        <Header class="side" title="Report" />
     </div>
-    
 </template>
+<script>
+import Header from "../../components/Header.vue";
+
+export default {
+    name: "Report",
+    components: {
+        Header,
+    },
+    methods: {},
+};
+</script>

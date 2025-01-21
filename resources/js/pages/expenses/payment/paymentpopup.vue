@@ -19,10 +19,11 @@
                             label="name*"
                             density="compact"
                             :items="Bookings"
-                            :return-object="false"
                             item-title="bookingName"
                             item-value="id"
                             :rules="[rules.required]"
+                            :return-object="false"
+
                         ></v-autocomplete>
                         <v-text-field
                             v-model="formData.payed"

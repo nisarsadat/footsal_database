@@ -1,4 +1,3 @@
-z
 <template>
     <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
     <Update
@@ -7,19 +6,15 @@ z
         @closePopup="closeupdate"
         :expens="expens"
     />
-    <Head />
-    <div class="relative sm:rounded-lg p-12">
+
+    <div class="relative sm:rounded-lg bg-white">
+        <Header title="Expenses_" subtitle="All Expense" />
+
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Expenses" subTitle="All Expense" />
-        <v-layout class="py-5">
+        <v-layout class="py-4 px-4 bg-white">
             <v-row class="justify-space-between">
-                <v-col cols="12" sm="3"> </v-col>
-                <v-col cols="12" sm="2">
-                    <v-btn
-                        color="light-blue-darken-1"
-                        size="large"
-                        @click="createPopUp"
-                    >
+                <v-col dir="rtl">
+                    <v-btn color="#99162e" @click="createPopUp">
                         <span>Create</span>
                         <v-icon right large>mdi-plus</v-icon>
                     </v-btn>
@@ -27,7 +22,7 @@ z
             </v-row>
         </v-layout>
 
-        <div class="overflow-x-auto pb-10">
+        <div class="overflow-x-auto pb-10 px-4">
             <v-app>
                 <v-main>
                     <v-row>
@@ -44,9 +39,8 @@ z
                             >
                                 <template
                                     v-slot:item.actions="{ item }"
-                                    class="right"
                                 >
-                                    <v-menu>
+                                    <!-- <v-menu>
                                         <template v-slot:activator="{ props }">
                                             <v-btn
                                                 icon="mdi-dots-vertical"
@@ -55,20 +49,19 @@ z
                                             ></v-btn>
                                         </template>
 
-                                        <v-list>
-                                            <v-list-item>
+                                        <v-list> -->
+                                            <v-list-item class="d-flex ">
                                                 <v-list-item-title
                                                     @click="edit(item)"
-                                                    class="cursor-pointer d-flex gap-3 justify-left pb-3"
+                                                    class="cursor-pointer gap-12 "
                                                 >
                                                     <v-icon color="gray"
                                                         >mdi-square-edit-outline</v-icon
                                                     >
-                                                    Edit
                                                 </v-list-item-title>
 
                                                 <v-list-item-title
-                                                    class="cursor-pointer d-flex gap-3"
+                                                    class="cursor-pointer gap-12"
                                                     @click="
                                                         Deleteexpenses(item.id)
                                                     "
@@ -76,11 +69,10 @@ z
                                                     <v-icon color="gray"
                                                         >mdi-delete-outline</v-icon
                                                     >
-                                                    Delete
                                                 </v-list-item-title>
                                             </v-list-item>
-                                        </v-list>
-                                    </v-menu>
+                                        <!-- </v-list>
+                                    </v-menu> -->
                                 </template>
                             </v-data-table-server>
                         </v-col>
@@ -95,13 +87,11 @@ import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import Header from "../../../components/Header.vue";
 import Popup from "./expensetable.vue";
-import Head from "../../../components/head.vue";
 import Update from "./Update.vue";
 export default {
     components: {
         Header,
         Popup,
-        Head,
         Update,
     },
     data: () => ({

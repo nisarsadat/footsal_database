@@ -1,17 +1,29 @@
 <template>
-    <div class="Animation">
-        <Head />
-        <Animation />
-    </div>
-
-    <div class="hama">
-        <div class="container">
-            <div class="grid-item" @update:options="FetchownerPickups">
+    <div class="px-8 pb-12 side">
+        <Header class="side" title="Dashboard" />
+        <div class="d-flex gap-6">
+            <v-card flat class="w-100" @update:options="FetchownerPickups">
                 <CustomerNames />
-            </div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
+            </v-card>
+            <v-card flat class="w-50" @update:options="FetchownerPickups">
+                <CustomerNames />
+            </v-card>
+        </div>
+        <div class="d-flex gap-6 py-12">
+            <v-card flat class="w-50" @update:options="FetchownerPickups">
+                <CustomerNames />
+            </v-card>
+            <v-card flat class="w-100" @update:options="FetchownerPickups">
+                <CustomerNames />
+            </v-card>
+        </div>
+        <div class="d-flex gap-6">
+            <v-card flat class="w-100" @update:options="FetchownerPickups">
+                <CustomerNames />
+            </v-card>
+            <v-card flat class="w-50" @update:options="FetchownerPickups">
+                <CustomerNames />
+            </v-card>
         </div>
     </div>
 </template>
@@ -19,15 +31,15 @@
 <script>
 import Animation from "../../components/Animation.vue";
 import AnimationGoalVue from "../../components/AnimationGoal.vue";
-import Head from "../../components/head.vue";
+import Header from "../../components/Header.vue";
 import CustomerNames from "./CustomerNames.vue";
 export default {
     name: "MiddlePart",
     components: {
-        Head,
+        Header,
         Animation,
         AnimationGoalVue,
-        CustomerNames
+        CustomerNames,
     },
     methods: {
         async FetchownerPickups({ page, itemsPerPage }) {
@@ -46,12 +58,6 @@ export default {
 
 <style scoped>
 /* CSS for MiddlePart */
-.hama {
-    width: 100%;
-    height: 600px;
-    margin-left: 120px;
-    padding-top: 100px;
-}
 
 .container {
     display: grid;
@@ -122,6 +128,9 @@ export default {
     width: 100%;
     border-radius: 6px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.27);
+}
+.side {
+    background-color: #f6f4f4;
 }
 .styled-div {
     width: 120px;

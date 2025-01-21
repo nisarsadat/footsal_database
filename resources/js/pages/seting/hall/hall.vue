@@ -1,18 +1,20 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
-    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :hall="hall"/>
-    <div class="relative sm:rounded-lg mt-20 p-12">
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :hall="hall"
+    />
+
+    <div class="relative sm:rounded-lg bg-white">
+        <Header title="Setting_" subtitle="Halls" />
+
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Setting" subTitle="Halls" />
-        <v-layout class="py-5">
+        <v-layout class="py-4 px-4">
             <v-row class="justify-space-between">
-                <v-col cols="12" sm="3"> </v-col>
-                <v-col cols="12" sm="2">
-                    <v-btn
-                        color="light-blue-darken-1"
-                        size="large"
-                        @click="createPopUp"
-                    >
+                <v-col dir="rtl">
+                    <v-btn color="#99162e" @click="createPopUp">
                         <span>Create</span>
                         <v-icon right large>mdi-plus</v-icon>
                     </v-btn>
@@ -20,7 +22,7 @@
             </v-row>
         </v-layout>
 
-        <div class="overflow-x-auto pb-10">
+        <div class="overflow-x-auto pb-10 px-4">
             <v-app>
                 <v-main>
                     <v-row>
@@ -100,14 +102,14 @@ export default {
             { title: "Action", key: "actions", sortable: false, align: "end" },
         ],
         createDailog: false,
-        updateDailog:false,
+        updateDailog: false,
         itemsPerPage: 5,
         page: 1,
         loading: false,
         dailog: false,
         totalItems: 0,
         halls: [],
-        hall:[],
+        hall: [],
     }),
     methods: {
         async FetchHalls({ page, itemsPerPage }) {
@@ -121,10 +123,7 @@ export default {
             this.loading = false;
         },
         async FetchHall(id) {
-
-            const response = await axios.get(
-                `halls/${id}`
-            );
+            const response = await axios.get(`halls/${id}`);
             this.hall = response.data.data;
         },
         async DeleteHalls(id) {
@@ -140,13 +139,13 @@ export default {
             });
         },
         edit(item) {
-           console.log(item)
+            console.log(item);
 
-           this.FetchHall(item.id);
-           this.updateDailog = true;
+            this.FetchHall(item.id);
+            this.updateDailog = true;
         },
-        closeupdate(){
-            this.updateDailog= false;
+        closeupdate() {
+            this.updateDailog = false;
         },
 
         // Temaplate Function

@@ -6,26 +6,23 @@
         @closePopup="closeupdate"
         :gem="gem"
     />
-    <div class="relative sm:rounded-lg mt-20 p-12">
+
+    <div class="relative sm:rounded-lg  bg-white">
+        <Header title="Setting_" subtitle="Gemnasyom" />
+
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Setting" subTitle="Gemnasyom" />
-        <v-layout class="py-5">
+        <v-layout class="py-4 px-4">
             <v-row class="justify-space-between">
-                <v-col cols="12" sm="3"> </v-col>
-                <v-col cols="12" sm="2">
-                    <v-btn
-                        color="light-blue-darken-1"
-                        size="large"
-                        @click="createPopUp"
-                    >
+                <v-col dir="rtl">
+                    <v-btn color="#99162e" @click="createPopUp">
                         <span>Create</span>
-                        <v-icon right large>mdi-plus</v-icon>
+                        <v-icon>mdi-plus</v-icon>
                     </v-btn>
                 </v-col>
             </v-row>
         </v-layout>
 
-        <div class="overflow-x-auto pb-10">
+        <div class="overflow-x-auto pb-10 px-4">
             <v-app>
                 <v-main>
                     <v-row>
@@ -40,6 +37,15 @@
                                 @update:options="FetchGymnasia"
                                 hover
                             >
+                                <template v-slot:item.path="{ item }">
+                                    <v-img
+                                        :src="item.path"
+                                        width="50"
+                                        height="50"
+                                        cover
+                                        class="rounded-xl border-2 border-gray-300"
+                                    ></v-img>
+                                </template>
                                 <template
                                     v-slot:item.actions="{ item }"
                                     class="right"

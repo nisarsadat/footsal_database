@@ -11,62 +11,71 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <v-form ref="formRef">
+
+
+                        <v-col class="flex">
+                            <div
+                            class="relative inline-block h-28 w-[80%]  rounded-lg object-cover"
+                        >
+                    
                         <v-text-field
-                            v-model="formData.name"
-                            variant="outlined"
-                            :rules="[rules.required, rules.counter]"
-                            label="Gemnasyom Name *"
-                            class="pb-4"
-                        ></v-text-field>
-                        <div class="photo-upload-container">
-                            <v-file-input
-                                type="file"
-                                ref="inputRef"
-                                style="display: none"
-                                @change="onChangeImage"
-                            ></v-file-input>
+                        v-model="formData.name"
+                        variant="outlined"
+                        :rules="[rules.required, rules.counter]"
+                        label="Gemnasyom Name *"
+                        class="pb-4"
+                    ></v-text-field></div>
 
-                            <img
-                                :src="imageSrc"
-                                class="photo-preview"
-                                v-show="imageSrc !== null"
-                            />
+                            <div
+                                class="relative inline-block h-28 w-40 ml-5 rounded-lg object-cover"
+                            >
+                                <v-file-input
+                                    type="file"
+                                    ref="inputRef"
+                                    style="display: none"
+                                    @change="onChangeImage"
+                                ></v-file-input>
 
-                            <div class="photo-overlay">
-                                <button
-                                    v-if="!imageSrc"
-                                    type="button"
-                                    @click="OpenWindow(inputRef)"
-                                    class="overlay-button"
+                                <img
+                                    :src="imageSrc"
+                                    class="photo-preview"
+                                    v-show="imageSrc !== null"
+                                />
+
+                                <div
+                                    class="absolute top-0 h-full w-full rounded-lg bg-opacity-0 flex items-center justify-center border-2 shadow-lg"
                                 >
-                                    <v-icon
-                                        size="x-large"
-                                        color="blue-grey-lighten-2"
-                                        >mdi-camera</v-icon
+                                    <button
+                                        v-if="!imageSrc"
+                                        type="button"
+                                        @click="OpenWindow(inputRef)"
+                                        class="overlay-button"
                                     >
-                                </button>
-                                <button
-                                    v-if="imageSrc"
-                                    type="button"
-                                    @click="CloseWindow()"
-                                    class="close-button"
-                                >
-                                    <v-icon size="small"
-                                        >mdi-close</v-icon
+                                        <v-icon
+                                            size="x-large"
+                                            color="blue-grey-lighten-2"
+                                            >mdi-camera</v-icon
+                                        >
+                                    </button>
+                                    <button
+                                        v-if="imageSrc"
+                                        type="button"
+                                        @click="CloseWindow()"
+                                        class="close-button"
                                     >
-                                </button>
-                                <button
-                                    v-if="imageSrc"
-                                    type="button"
-                                    @click="OpenWindow(inputRef)"
-                                    class="edit-button"
-                                >
-                                    <v-icon size="small"
-                                        >mdi-pencil</v-icon
+                                        <v-icon size="small">mdi-close</v-icon>
+                                    </button>
+                                    <button
+                                        v-if="imageSrc"
+                                        type="button"
+                                        @click="OpenWindow(inputRef)"
+                                        class="edit-button"
                                     >
-                                </button>
+                                        <v-icon size="small">mdi-pencil</v-icon>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </v-col>
                         <v-textarea
                             v-model="formData.note"
                             variant="outlined"
@@ -76,7 +85,9 @@
                     </v-form>
                 </v-card-text>
                 <div class="justify-start pl-6 pb-6">
-                    <v-btn color="light-blue-darken-1" @click="createCategory">Submit</v-btn>
+                    <v-btn color="light-blue-darken-1" @click="createCategory"
+                        >Submit</v-btn
+                    >
                 </div>
             </v-card>
         </template>
@@ -84,17 +95,16 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import axios from 'axios';
-
+import { reactive, ref } from "vue";
+import axios from "axios";
 
 let imageSrc = ref(null);
 const inputRef = ref(null);
 const onChangeImage = (e) => {
     const file = e.target.files[0];
     if (file) {
-        imageSrc.value = URL.createObjectURL(file);  // Set up for preview
-        formData.file = file;  // Store the file for uploading
+        imageSrc.value = URL.createObjectURL(file); // Set up for preview
+        formData.file = file; // Store the file for uploading
     }
 };
 const OpenWindow = () => {
@@ -102,7 +112,7 @@ const OpenWindow = () => {
 };
 const CloseWindow = () => {
     if (imageSrc.value) {
-        URL.revokeObjectURL(imageSrc.value);  // Clean up object URL to avoid memory leaks
+        URL.revokeObjectURL(imageSrc.value); // Clean up object URL to avoid memory leaks
     }
     imageSrc.value = null;
     formData.file = null;
@@ -112,7 +122,7 @@ let dailog = defineProps("dailog");
 const formRef = ref(null);
 const formData = reactive({
     name: "",
-    file: null,  // Handle the file object directly
+    file: null, // Handle the file object directly
     note: "",
 });
 
@@ -122,28 +132,26 @@ const closePopup = () => {
     emit("closePopup");
 };
 
-
-
 // Function to create a category, including uploading a file
 const CreateCategory = async () => {
     if (await formRef.value.validate()) {
         const form = new FormData();
-        form.append('name', formData.name);
-        form.append('note', formData.note);
+        form.append("name", formData.name);
+        form.append("note", formData.note);
         if (formData.file) {
-            form.append('file', formData.file);  // Ensure this key matches the backend expectation
+            form.append("file", formData.file); // Ensure this key matches the backend expectation
         }
 
         try {
-            const response = await axios.post('/gymnasia', form, {
+            const response = await axios.post("/gymnasia", form, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    "Content-Type": "multipart/form-data",
+                },
             });
-            console.log('Upload successful', response.data);
+            console.log("Upload successful", response.data);
             closePopup();
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error("Error uploading file:", error);
         }
     }
 };
@@ -154,13 +162,13 @@ const createCategory = () => {
             try {
                 const payload = {
                     name: formData.name,
-                    path: formData.path,  // Set the path received from the server
-                    note: formData.note
+                    path: formData.path, // Set the path received from the server
+                    note: formData.note,
                 };
                 await CreateCategory(payload);
                 closePopup();
             } catch (error) {
-                console.error('Error creating category:', error);
+                console.error("Error creating category:", error);
             }
         }
     });

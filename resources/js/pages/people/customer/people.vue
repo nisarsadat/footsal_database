@@ -1,27 +1,28 @@
 <template>
     <Create v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
-    <Update v-if="updateDailog" :dailog="updateDailog" @closePopup="closeupdate" :owner="owner"/>
+    <Update
+        v-if="updateDailog"
+        :dailog="updateDailog"
+        @closePopup="closeupdate"
+        :owner="owner"
+    />
 
-    <div class="relative sm:rounded-lg mt-20 p-12">
+    <div class="relative sm:rounded-lg bg-white">
+        <Header title="People_" subtitle="Owner" />
+
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="People" subTitle="Owner" />
-        <v-layout class="py-5">
+        <v-layout class="py-4 px-4">
             <v-row class="justify-space-between">
-                <v-col cols="12" sm="3"> </v-col>
-                <v-col cols="12" sm="2">
-                    <v-btn
-                        color="light-blue-darken-1"
-                        size="large"
-                        @click="createPopUp"
-                    >
+                <v-col dir="rtl">
+                    <v-btn color="#99162e" class="btn" @click="createPopUp">
                         <span>Create</span>
-                        <v-icon right large>mdi-plus</v-icon>
+                        <v-icon>mdi-plus</v-icon>
                     </v-btn>
                 </v-col>
             </v-row>
         </v-layout>
 
-        <div class="overflow-x-auto pb-10">
+        <div class="overflow-x-auto pb-10 px-4">
             <v-app>
                 <v-main>
                     <v-row>
@@ -125,10 +126,7 @@ export default {
             this.dailog = false;
         },
         async FetchOwner(id) {
-
-            const response = await axios.get(
-                `owners/${id}`
-            );
+            const response = await axios.get(`owners/${id}`);
             this.owner = response.data.data;
         },
         async DeleteOwners(id) {
@@ -156,26 +154,16 @@ export default {
             this.createDailog = true;
         },
         edit(item) {
-           console.log(item.id)
+            console.log(item.id);
 
-           this.FetchOwner(item.id);
+            this.FetchOwner(item.id);
             this.updateDailog = true;
-
         },
-        closeupdate(){
-            this.updateDailog= false;
+        closeupdate() {
+            this.updateDailog = false;
         },
         closebtn() {
             this.createDailog = false;
-            Toastify({
-                text: "Action completed successfully!",
-                duration: 3000,
-                close: true,
-                backgroundColor: "#089",
-                className: "info",
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-
-            }).showToast();
             this.FetchOwners({
                 page: this.page,
                 itemsPerPage: this.itemsPerPage,

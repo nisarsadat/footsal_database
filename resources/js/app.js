@@ -20,7 +20,8 @@ const vuetify = createVuetify({
 });
 
 const app = createApp(App);
-
+// import i18n from "../../resources/js/components/local"
+// app.use(i18n); 
 app.config.globalProperties.$axios = axios; // This makes Axios available on all components via this.$axios
 app.use(vuetify);
 app.use(router); // Use the router

@@ -10,7 +10,7 @@
             <!-- Optional content above the table -->
         </template>
         <template v-slot:bottom>
-            <div class="text-center pt-2">
+            <div class="p-0 m-0">
                 <v-pagination v-model="page" :length="pageCount"></v-pagination>
             </div>
         </template>
@@ -27,7 +27,7 @@ export default {
             itemsPerPage: 5,
             headers: [
     {
-        text: "Owner Name", // Display text for the header
+        title: "Owner Name", // Display text for the header
         value: "name", // Key from the data objects to link to this column
         align: "start",
         sortable: false,

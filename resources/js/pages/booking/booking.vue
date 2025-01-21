@@ -1,4 +1,3 @@
-
 <template>
     <Popup v-if="createDailog" :dailog="createDailog" @closePopup="closebtn" />
     <Update
@@ -7,18 +6,15 @@
         @closePopup="closeupdate"
         :booking="booking"
     />
-    <div class="relative sm:rounded-lg mt-20 p-12">
+
+    <div class="relative sm:rounded-lg bg-white">
+        <Header title="Booking_" subtitle="BOOKING" />
+
         <!-- in this part i import header for breadcrumbs  -->
-        <Header mainTitle="Booking" subTitle="BOOKING" />
-        <v-layout class="py-5">
+        <v-layout class="py-4 px-4">
             <v-row class="justify-space-between">
-                <v-col cols="12" sm="3"> </v-col>
-                <v-col cols="12" sm="2">
-                    <v-btn
-                        color="light-blue-darken-1"
-                        size="large"
-                        @click="createPopUp"
-                    >
+                <v-col dir="rtl">
+                    <v-btn color="#99162e" @click="createPopUp">
                         <span>Create</span>
                         <v-icon right large>mdi-plus</v-icon>
                     </v-btn>
@@ -26,7 +22,7 @@
             </v-row>
         </v-layout>
 
-        <div class="overflow-x-auto pb-10">
+        <div class="overflow-x-auto pb-10 px-4">
             <v-app>
                 <v-main>
                     <v-row>

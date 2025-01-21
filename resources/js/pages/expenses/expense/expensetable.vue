@@ -16,13 +16,12 @@
                     <v-form ref="formRef">
                         <v-autocomplete
                             v-model="formData.expenseCatagoryId"
-                            clearable
                             variant="outlined"
                             label="Expense Category*"
                             density="compact"
                             :items="expenseCategories"
                             item-title="name"
-                            item-value="name"
+                            item-value="id"
                             :rules="[rules.required]"
                             :return-object="false"
                         ></v-autocomplete>
